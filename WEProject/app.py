@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import sqlite3
 import csv
-import os
+import random
+import string
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -374,6 +375,42 @@ def my_deliveries():
         return render_template("error.html", message="Failed to load deliveries.")
 
 
+# FORGOT PASSWORD
+
+def generate_random_password(length=12):
+    characters = string.ascii_letters + string.digits + "!@#$%^&*"
+    return ''.join(random.choice(characters) for _ in range(length))
+
+@app.route('/generate_and_update_password', methods=['POST'])
+def generate_and_update_password():
+    data = request.json
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+
+    hashed_password = generate_random_password()
+
+    try:
+
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+
+
+        cursor.execute(
+            "UPDATE users SET password = ? WHERE email = ?",
+            (hashed_password, email)
+        )
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Email not found"}), 404
+        return jsonify({"new_password": hashed_password})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
 
 
 if __name__ == '__main__':
