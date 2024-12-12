@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='myaccount.css') }}">
+    <title>My Account</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" id="order">Order</a></li>
+                <li><a href="#" id="deliver">Deliver</a></li>
+                <li><a href="#" id="homepage">Home Page</a></li>
+                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
+                <li><a href="#" id="ratings">Ratings</a></li>
+                <li><a href="#" id="myorders">My Orders</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="profile-card">
+            <img src="{{ url_for('static', filename='signinimage.png') }}" alt="Profile Picture" class="profile-pic">
+            <h2 class="user-email">{{ user_email }}</h2>
+            <button id="change-password-btn" class="btn">Change Password</button>
+            <button id="logout-btn" class="btn">Logout</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='myaccount.js') }}"></script>
+</body>
+</html>

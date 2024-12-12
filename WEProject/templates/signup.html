@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <title>Sign Up</title>
+</head>
+<body>
+    <!-- REPLACE LOGO -->
+    <div class="screen-1">
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 640 480">
+            <g transform="translate(320,240) scale(3.31)">
+                <circle cx="0" cy="0" r="40" fill="#3d4785"></circle>
+            </g>
+            <g transform="translate(268,214) scale(0.98)">
+                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
+            </g>
+            <g transform="translate(363,211) scale(1.01)">
+                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
+            </g>
+            <g transform="translate(319,287) scale(0.92)">
+                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
+            </g>
+        </svg>
+        <div class="email">
+            <label for="email">Email Address</label>
+            <div class="input-wrapper">
+                <ion-icon name="mail-outline"></ion-icon>
+                <input type="email" name="email" placeholder="Username@gmail.com" required>
+            </div>
+        </div>
+        <div class="password">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" name="password" placeholder="············" required>
+                <ion-icon class="show-hide" name="eye-outline"></ion-icon>
+            </div>
+        </div>
+        <button class="signup" onclick="signupUser()">Sign Up</button>
+        <div class="footer">
+            <span onclick="redirectToLogin()">Login</span>
+            <span>Forgot Password?</span>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='signup.js') }}"></script>
+</body>
+</html>
+

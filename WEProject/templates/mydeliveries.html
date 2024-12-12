@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mydeliveries.css') }}">
+    <title>My Deliveries</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" id="order">Order</a></li>
+                <li><a href="#" id="deliver">Deliver</a></li>
+                <li><a href="#" id="homepage">Home Page</a></li>
+                <li><a href="#" id="myaccount">My Account</a></li>
+                <li><a href="#" id="ratings">Ratings</a></li>
+                <li><a href="#" id="myorders">My Orders</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>My Deliveries</h1>
+
+        {% if deliveries %}
+            <div class="delivery-list">
+                {% for delivery in deliveries %}
+                    <div class="delivery-card">
+                        <h3>Delivery ID: {{ delivery[0] }}</h3>
+                        <ul class="items-container" data-items="{{ delivery[2] }}"></ul>
+                        <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ delivery[3] }}">{{ delivery[3] }}</span></p>
+                        <p><strong>Location:</strong> {{ delivery[4] }}</p>
+                        <p><strong>Comments:</strong> {{ delivery[5] }}</p>
+                        <p><strong>Date:</strong> {{ delivery[7].split(' ')[0] }}</p>
+                        <p><strong>Time:</strong> {{ delivery[7].split(' ')[1] }}</p>
+                        <p>
+                            <strong>Status:</strong>
+                            <span class="status {{ 'pending' if delivery[6] == 'Pending' else '' }} 
+                                                  {{ 'completed' if delivery[6] == 'Completed' else '' }} 
+                                                  {{ 'accepted' if delivery[6] == 'Accepted' else '' }} 
+                                                  {{ 'picked-up' if delivery[6] == 'Picked Up' else '' }}">
+                                {{ delivery[6] }}
+                            </span>
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No deliveries found for your email.</p>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='mydeliveries.js') }}"></script>
+</body>
+</html>

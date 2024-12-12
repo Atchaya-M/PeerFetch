@@ -1,0 +1,256 @@
+order.js
+
+// document.getElementById("place-order").addEventListener("click", function () {
+//     const selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
+//     const totalPrice = parseFloat(localStorage.getItem("totalPrice") || "0.00");
+    
+//     // Get location and comments from the form (assuming you have input fields for these)
+    // const location = document.getElementById("location-input").value;
+    // const comments = document.getElementById("comments-input").value;
+
+    // const orderDetails = {
+    //     selectedItems: selectedItems,
+    //     totalPrice: totalPrice,
+    //     location: location,
+    //     comments: comments
+    // };
+
+//     fetch("/order", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(orderDetails),
+//     })
+//     .then((response) => {
+//         if (response.ok) {
+//             alert("Order placed successfully!");
+//             window.location.href = "/myorders"; // Redirect to the orders page
+//         } else {
+//             alert("Failed to place order. Please try again.");
+//         }
+//     })
+//     .catch((error) => console.error("Error:", error));
+// });
+
+
+signin.js
+
+// function loginUser() {
+//     const email = document.querySelector('input[name="email"]').value;
+//     const password = document.querySelector('input[name="password"]').value;
+    
+//     fetch('/login', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//         body: new URLSearchParams({
+//             email: email,
+//             password: password
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             window.location.href = "/homepage";  
+//         } else {
+//             alert(data.message);  
+//         }
+//     })
+//     .catch(error => console.error('Error:', error));
+// }
+
+
+
+
+
+app.py
+
+
+# def insert_order(selected_items, total_price):
+#     conn = sqlite3.connect('orders.db')
+#     cursor = conn.cursor()
+
+#     cursor.execute('''
+#         CREATE TABLE IF NOT EXISTS orders (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             selected_items TEXT,
+#             total_price REAL,
+#             status TEXT DEFAULT 'Pending'
+#         )
+#     ''')
+
+#     cursor.execute('''
+#         INSERT INTO orders (selected_items, total_price) 
+#         VALUES (?, ?)
+#     ''', (str(selected_items), total_price))  
+
+#     conn.commit()
+#     conn.close()
+
+
+
+# @app.route('/order2', methods=['GET', 'POST'])
+# def order2_page():
+#     if request.method == 'POST':
+#         selected_items = request.json.get('selectedItems', [])
+#         total_price = request.json.get('totalPrice', 0.00)
+#         order_details = request.json
+#         email = session.get('user_email')
+#         # save_order_to_db(order_details, email)
+#         # insert_order(selected_items, total_price)
+#         session['selected_items'] = selected_items
+#         session['total_price'] = total_price
+
+#         # return jsonify({"message": "Data saved successfully"}), 200
+#     selected_items = session.get('selected_items', [])
+#     total_price = session.get('total_price', 0.00)
+    
+#     return render_template('order2.html', selected_items=selected_items, total_price=total_price)
+
+# @app.route('/myorders')
+# def myorders_page():
+#     order_details = request.json
+#     email = session.get('user_email')
+#     print(order_details)
+#     save_order_to_db(order_details, email)
+
+#     # Retrieve orders from the database for the logged-in user
+#     conn = sqlite3.connect('your_database.db')
+#     cursor = conn.cursor()
+
+#     cursor.execute('SELECT * FROM orders WHERE email = ?', (email,))
+#     orders = cursor.fetchall()
+
+#     conn.close()
+
+#     return render_template('myorders.html', orders=orders)
+
+
+
+
+
+
+
+
+# @app.route('/order')
+# def order():
+#     items = load_items_from_csv()  
+#     return render_template('order.html', items=items)
+
+# def save_order_to_db(order_details, email):
+#     conn = sqlite3.connect('your_database.db')
+#     cursor = conn.cursor()
+
+#     cursor.execute('''
+#         INSERT INTO orders (email, items, total_price, location, comments, status)
+#         VALUES (?, ?, ?, ?, ?, ?)
+#     ''', (email, str(order_details['selectedItems']), order_details['totalPrice'], order_details['location'], order_details.get('comments', ''), 'Pending'))
+#     conn.commit()
+#     conn.close()
+
+# @app.route('/order', methods=['GET', 'POST'])
+# # def order():
+# #     items = load_items_from_csv()  
+# #     return render_template('order.html', items=items)
+
+# def order():
+#     if request.method == 'POST':
+#         items = load_items_from_csv() 
+#         selected_items = request.json.get('selectedItems', [])
+#         total_price = request.json.get('totalPrice', 0.00)
+#         order_details = request.json
+#         email = session.get('user_email')
+#         # save_order_to_db(order_details, email)
+#         # insert_order(selected_items, total_price)
+#         session['selected_items'] = selected_items
+#         session['total_price'] = total_price
+
+#         # return jsonify({"message": "Data saved successfully"}), 200
+#     selected_items = session.get('selected_items', [])
+#     total_price = session.get('total_price', 0.00)
+    
+#     return render_template('order.html', items=items)
+
+
+
+deliver.js
+
+   // const itemsContainer = document.getElementById("items-container");
+    // const rawItems = itemsContainer.dataset.items;
+    
+    // try {
+    //     const formattedItems = rawItems.replace(/'/g, '"');
+    //     const items = JSON.parse(formattedItems);
+    //     items.forEach(item => {
+    //         const li = document.createElement("li");
+    //         li.innerHTML = `
+    //             <span class="item-name">${item.name}</span> :
+    //             <span class="item-quantity">${item.quantity} pcs</span> x
+    //             <span class="item-price">₹${item.price}</span> 
+    //         `;
+    //         itemsContainer.appendChild(li);
+    //     });
+    // } catch (error) {
+    //     console.error("Error parsing items:", error);
+    //     itemsContainer.textContent = "Failed to load items.";
+    // }
+
+
+
+
+signin.js
+
+
+// document.querySelector('.login').addEventListener('click', async () => {
+    
+//     const email = document.querySelector('input[name="email"]').value;
+//     const password = document.querySelector('input[name="password"]').value;
+
+//     try {
+//         const response = await fetch('/login', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({ email, password }),
+//         });
+
+//         const result = await response.json();
+//         if (result.success) {
+//             window.location.href = "/homepage";  
+        
+//         } else {
+//             alert("Invalid Credentials");
+//         }
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert('An error occurred. Please try again.');
+//     }
+// });
+
+
+
+app.py for login
+
+
+# @app.route('/login', methods=['POST'])
+# def login():
+#     email = request.form.get('email')
+#     password = request.form.get('password')
+    
+#     if not email or not password:
+#         return jsonify({'success': False, 'message': 'Email and password are required'}), 400
+    
+#     conn = get_db_connection()
+#     user = conn.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password)).fetchone()
+#     conn.close()
+    
+#     if user:
+#         session['user_email'] = email
+#         session['user_password'] = password
+#         return redirect(url_for('homepage'))
+#     else:
+#     #     return redirect(url_for('signin'))
+#         return render_template('signin.html', message='Invalid credentials')

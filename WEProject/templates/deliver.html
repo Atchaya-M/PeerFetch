@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Awaiting Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='deliver.css') }}">
+</head>
+<body>
+    <header>
+            <nav>
+                <ul class="nav-links">
+        
+                    <li><a href="#" id="order">Order</a></li>
+                    <li><a href="#" id="homepage">Home Page</a></li>
+                    <li><a href="#" id="myorders">My Orders</a></li>
+                    <li><a href="#" id="mydeliveries">My Deliveries</a></li>
+                    <li><a href="#" id="ratings">Ratings</a></li>
+                    <li><a href="#" id="myaccount">My Account</a></li>
+                </ul>
+            </nav>
+            <br>
+            <br>
+        <h1>Orders Awaiting Delivery</h1>
+    </header>
+
+    <main>
+        {% if orders %}
+            <div class="orders-list">
+                {% for order in orders %}
+                    <div class="order-card" id="order-card">
+                        <div class="order-header">
+                            <span class="order-id">Order ID: {{ order[0] }}</span>
+                            <span class="order-status">Status: {{ order[6] }}</span>
+                        </div>
+                        <ul id="items-container" data-items="{{ order[2] }}"></ul>
+                        <div class="order-total">
+                            <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ order[3] }}">{{ order[3] }}</span></p>
+                        </div>
+                        <div class="order-location">
+                            <strong>Delivery Location:</strong> {{ order[4] }}
+                        </div>
+                        <div class="order-comments">
+                            <strong>Comments:</strong> {{ order[5] }}
+                        </div>
+                        <div class="order-actions">
+                            <button class="deliver-btn" data-order-id="{{ order[0] }}">Deliver Now</button>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No orders awaiting delivery.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2024 PeerFetch. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='deliver.js') }}"></script>
+</body>
+</html>

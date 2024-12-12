@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About PeerFetch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+    
+                <li><a href="#" id="order">Order</a></li>
+                <li><a href="#" id="deliver">Deliver</a></li>
+                <li><a href="#" id="myorders">My Orders</a></li>
+                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
+                <li><a href="#" id="ratings">Ratings</a></li>
+                <li><a href="#" id="myaccount">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="rectangle">
+            <h1>About PeerFetch</h1>
+            <p><strong>PeerFetch</strong> is your go-to platform for ordering and delivering stationery items within your college campus. We connect students who need supplies with peers who can deliver them quickly and for a nominal fee.</p>
+        </section>
+
+        <section class="rectangle">
+            <h2>Our Mission</h2>
+            <p>We aim to foster a community-driven solution for everyday stationery needs. PeerFetch empowers students to save time while creating a seamless delivery experience.</p>
+        </section>
+
+        <section class="rectangle">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <h3>1. Order</h3>
+                    <p>Place your order for stationery items through our platform.</p>
+                </div>
+                <div class="step">
+                    <h3>2. Deliver</h3>
+                    <p>Fellow students deliver your order efficiently.</p>
+                </div>
+                <div class="step">
+                    <h3>3. Earn</h3>
+                    <p>Delivery partners earn a nominal fee, ensuring mutual benefits.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="rectangle">
+            <h2>Why Choose Us?</h2>
+            <ul>
+                <li>Quick and convenient delivery.</li>
+                <li>Affordable fees for students.</li>
+                <li>Fosters campus community engagement.</li>
+            </ul>
+        </section>
+
+        <section class="rectangle">
+            <h2>Contact Us</h2>
+            <p>Have questions or suggestions? Reach us at <a href="mailto:support@peerfetch.com">support@peerfetch.com</a>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 PeerFetch. All rights reserved.</p>
+    </footer>
+    <script src="{{ url_for('static', filename='homepage.js') }}"></script>
+</body>
+</html>

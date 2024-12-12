@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='myorders.css') }}">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" id="order">Order</a></li>
+                <li><a href="#" id="deliver">Deliver</a></li>
+                <li><a href="#" id="homepage">Home Page</a></li>
+                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
+                <li><a href="#" id="ratings">Ratings</a></li>
+                <li><a href="#" id="myaccount">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Your Orders</h1>
+        <div class="orders-container">
+            {% for order in orders %}
+            <div class="order">
+                <h2>Order ID: {{ order[0] }}</h2>
+                <div class="order-details">
+                    <div class="order-items">
+                        <ul class="items-container" data-items="{{ order[2] }}"></ul>
+                    </div>
+                    <div class="order-summary">
+                        <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ order[3] }}">{{ order[3] }}</span></p>
+                        <p><strong>Location:</strong> {{ order[4] }}</p>
+                        <p><strong>Comments:</strong> {{ order[5] }}</p>
+                        <p><strong>Date:</strong> {{ order[7].split(' ')[0] }}</p>
+                        <p><strong>Time:</strong> {{ order[7].split(' ')[1] }}</p>
+                        <p>
+                            <strong>Status:</strong>
+                            <span class="status {{ 'pending' if order[6] == 'Pending' else '' }} 
+                                                  {{ 'completed' if order[6] == 'Completed' else '' }} 
+                                                  {{ 'accepted' if order[6] == 'Accepted' else '' }} 
+                                                  {{ 'picked-up' if order[6] == 'Picked Up' else '' }}">
+                                {{ order[6] }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <button class="reorder-btn" data-order-id="{{ order[0] }}">Reorder</button>
+            </div>
+
+            {% endfor %}
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='myorders.js') }}"></script>
+</body>
+
+</html>
