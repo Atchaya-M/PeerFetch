@@ -77,6 +77,7 @@ def create_delivery_table():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS delivery (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER NOT NULL,
             email TEXT NOT NULL,
             items TEXT NOT NULL,
             total_price REAL NOT NULL,
@@ -300,9 +301,9 @@ def move_to_delivery():
         _, items, total_price, location, comments, timestamp = order_data
 
         cursor1.execute("""
-            INSERT INTO delivery (email, items, total_price, location, comments, status, timestamp)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (user_email, items, total_price, location, comments, 'Accepted', timestamp))
+            INSERT INTO delivery (order_id, email, items, total_price, location, comments, status, timestamp)
+            VALUES (?,?, ?, ?, ?, ?, ?, ?)
+        """, (order_id,user_email, items, total_price, location, comments, 'Accepted', timestamp))
         conn1.commit()
 
         return jsonify({'success': True})

@@ -28,19 +28,20 @@
                 {% for delivery in deliveries %}
                     <div class="delivery-card">
                         <h3>Delivery ID: {{ delivery[0] }}</h3>
-                        <ul class="items-container" data-items="{{ delivery[2] }}"></ul>
-                        <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ delivery[3] }}">{{ delivery[3] }}</span></p>
-                        <p><strong>Location:</strong> {{ delivery[4] }}</p>
+                        <ul class="items-container" data-items="{{ delivery[3] }}"></ul>
+                        <p><strong>Order ID:</strong> {{ delivery[1] }}</p>
+                        <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ delivery[4] }}">{{ delivery[4] }}</span></p>
+                        <p><strong>Location:</strong> {{ delivery[5] }}</p>
                         <p><strong>Comments:</strong> {{ delivery[5] }}</p>
-                        <p><strong>Date:</strong> {{ delivery[7].split(' ')[0] }}</p>
-                        <p><strong>Time:</strong> {{ delivery[7].split(' ')[1] }}</p>
+                        <p><strong>Date:</strong> {{ delivery[8].split(' ')[0] }}</p>
+                        <p><strong>Time:</strong> {{ delivery[8].split(' ')[1] }}</p>
                         <p>
                             <strong>Status:</strong>
-                            <span class="status {{ 'pending' if delivery[6] == 'Pending' else '' }} 
-                                                  {{ 'completed' if delivery[6] == 'Completed' else '' }} 
-                                                  {{ 'accepted' if delivery[6] == 'Accepted' else '' }} 
-                                                  {{ 'picked-up' if delivery[6] == 'Picked Up' else '' }}">
-                                {{ delivery[6] }}
+                            <span class="status {{ 'pending' if delivery[7] == 'Pending' else '' }} 
+                                                  {{ 'completed' if delivery[7] == 'Completed' else '' }} 
+                                                  {{ 'accepted' if delivery[7] == 'Accepted' else '' }} 
+                                                  {{ 'picked-up' if delivery[7] == 'Picked Up' else '' }}">
+                                {{ delivery[7] }}
                             </span>
                         </p>
                     </div>

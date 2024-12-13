@@ -36,3 +36,4 @@ function loginUser() {
 function redirectToSignup() {
     window.location.href = '/signup';
 }
+
