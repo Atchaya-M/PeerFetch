@@ -3,6 +3,18 @@ import sqlite3
 import csv
 import random
 import string
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Access the environment variables
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -378,40 +390,72 @@ def my_deliveries():
 
 # FORGOT PASSWORD
 
-def generate_random_password(length=12):
-    characters = string.ascii_letters + string.digits + "!@#$%^&*"
-    return ''.join(random.choice(characters) for _ in range(length))
+# Helper function to generate a random password
+def generate_temp_password(length=8):
+    characters = string.ascii_letters + string.digits
+    temp_password = ''.join(random.choice(characters) for _ in range(length))
+    return temp_password
 
-@app.route('/generate_and_update_password', methods=['POST'])
-def generate_and_update_password():
-    data = request.json
+# Function to send the temporary password to the user's email
+def send_reset_email(user_email, temp_password):
+    sender_email = SENDER_EMAIL
+    sender_password = SENDER_PASSWORD  # Use an app password if 2-factor authentication is enabled
+    receiver_email = user_email
+
+    # Set up the email content
+    subject = "Password Reset Request"
+    body = f"Hello, \n\nYour temporary password is: {temp_password}\n\nPlease change your password as soon as possible."
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Send the email using SMTP
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        server.quit()
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+# Route to handle "Forgot Password"
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
     email = data.get('email')
 
     if not email:
-        return jsonify({"error": "Email is required"}), 400
+        return jsonify({'success': False, 'message': 'Email is required'}), 400
 
+    conn = get_db_connection()
+    user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+    conn.close()
 
-    hashed_password = generate_random_password()
+    if user:
+        temp_password = generate_temp_password()
+        
+        # Send the reset email
+        email_sent = send_reset_email(email, temp_password)
+        if email_sent:
+            # Update the database with the temporary password
+            conn = get_db_connection()
+            conn.execute('UPDATE users SET password = ? WHERE email = ?', (temp_password, email))
+            conn.commit()
+            conn.close()
 
-    try:
-
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
-
-
-        cursor.execute(
-            "UPDATE users SET password = ? WHERE email = ?",
-            (hashed_password, email)
-        )
-        conn.commit()
-
-        if cursor.rowcount == 0:
-            return jsonify({"error": "Email not found"}), 404
-        return jsonify({"new_password": hashed_password})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        conn.close()
+            return jsonify({'success': True, 'message': 'Temporary password has been sent to your email'}), 200
+        else:
+            return jsonify({'success': False, 'message': 'Failed to send email'}), 500
+    else:
+        return jsonify({'success': False, 'message': 'Email not found'}), 404
 
 
 if __name__ == '__main__':

@@ -52,81 +52,29 @@
 
 
             <!-- <span>Forgot Password?</span> -->
-            <span onclick="sendmailAndUpdatePassword()">Forgot Password?</span>
+            <span onclick="forgotPassword()">Forgot Password?</span>
         </div>
     </div>
     <script src="{{ url_for('static', filename='signin.js') }}"></script>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script>
-//         function generatePassword(length = 12) {
-//     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-//     let password = '';
-//     for (let i = 0; i < length; i++) {
-//         password += characters.charAt(Math.floor(Math.random() * characters.length));
-//     }
-//     return password;
-// }
-
-
-// function sendmail()
-// {
-//     newPassword = generatePassword();
-//     const email = document.querySelector('input[name="email"]').value;
-//     let body = "Your new password is "+newPassword+"<br>Please change the password after logging into your account if needed.";
-
-//     Email.send({
-//        SecureToken: "034cb2bb-27ba-43d6-9986-4cca665a0f88",
-//         To : email,
-//         // CHANGE THIS
-//         From: "bc909350@gmail.com",
-//         Subject: "Password Change for PeerFetch",
-//         Body:body,
-//     }).then(
-//     );
-// }
-
-function sendmailAndUpdatePassword() {
-    const email = document.querySelector('input[name="email"]').value;
-
-    if (!email) {
-        alert("Please enter your email");
-        return;
-    }
-
-    fetch('/generate_and_update_password', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert("Error: " + data.error);
-        } else {
-            const newPassword = data.new_password;
-            const body = `Your new password is ${newPassword}<br>Please change the password after logging into your account if needed.`;
-
-            Email.send({
-                SecureToken: "034cb2bb-27ba-43d6-9986-4cca665a0f88",
-                To: email,
-                From: "bc909350@gmail.com",
-                Subject: "Password Change for PeerFetch",
-                Body: body,
-            }).then(() => {
-             
-                alert("Email sent and password updated successfully");
-            }).catch(error => {
-                console.error("Error sending email:", error);
-            });
+        function forgotPassword() {
+            const email = prompt("Enter your email to reset your password:");
+            if (email) {
+                fetch('/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                });
+            }
         }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-}
-
     </script>
+    
 </body>
 </html>

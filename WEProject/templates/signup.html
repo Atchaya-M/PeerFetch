@@ -41,10 +41,28 @@
         <button class="signup" onclick="signupUser()">Sign Up</button>
         <div class="footer">
             <span onclick="redirectToLogin()">Login</span>
-            <span>Forgot Password?</span>
+            <span onclick="forgotPassword()">Forgot Password?</span>
         </div>
     </div>
     <script src="{{ url_for('static', filename='signup.js') }}"></script>
+    <script>
+        function forgotPassword() {
+            const email = prompt("Enter your email to reset your password:");
+            if (email) {
+                fetch('/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                });
+            }
+        }
+    </script>
 </body>
 </html>
 
