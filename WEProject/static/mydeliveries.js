@@ -97,4 +97,23 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(li);
     });
 
+    const searchBar = document.getElementById('search-bar');
+const deliveries = Array.from(document.querySelectorAll('.delivery-card'));
+
+searchBar.addEventListener('input', () => {
+    const query = searchBar.value.toLowerCase();
+
+    deliveries.forEach(delivery => {
+        const fields = Array.from(delivery.querySelectorAll('*')); 
+        const isMatch = fields.some(field => field.textContent.toLowerCase().includes(query));
+
+        if (isMatch) {
+            delivery.style.display = ''; 
+        } else {
+            delivery.style.display = 'none';
+        }
+    });
+});
+
+
 });

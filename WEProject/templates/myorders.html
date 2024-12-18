@@ -23,7 +23,11 @@
     </header>
 
     <main>
+        
         <h1>Your Orders</h1>
+        <div>
+            <input type="text" id="search-bar" placeholder="Search for items...">
+        </div>
         <div class="orders-container">
             {% for order in orders %}
             <div class="order">

@@ -21,8 +21,11 @@
     </header>
 
     <div class="container">
+        
         <h1>My Deliveries</h1>
-
+        <div>
+            <input type="text" id="search-bar" placeholder="Search for items...">
+        </div>
         {% if deliveries %}
             <div class="delivery-list">
                 {% for delivery in deliveries %}

@@ -68,6 +68,25 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+
+    const searchBar = document.getElementById('search-bar');
+    const itemsContainer = document.querySelector('.items-container');
+    const items1 = Array.from(itemsContainer.querySelectorAll('.item'));
+
+    searchBar.addEventListener('input', () => {
+        const query = searchBar.value.toLowerCase();
+
+        items1.forEach(item => {
+            const fields = Array.from(item.querySelectorAll('*')); 
+            const isMatch = fields.some(field => field.textContent.toLowerCase().includes(query));
+
+            if (isMatch) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
 });
 
 let selectedItems = [];

@@ -97,6 +97,24 @@ priceContainers.forEach(container => {
     container.appendChild(li);
 });
 
+const searchBar = document.getElementById('search-bar');
+    const orders = Array.from(document.querySelectorAll('.order'));
+
+    searchBar.addEventListener('input', () => {
+        const query = searchBar.value.toLowerCase();
+
+        orders.forEach(order => {
+            const fields = Array.from(order.querySelectorAll('*')); 
+            const isMatch = fields.some(field => field.textContent.toLowerCase().includes(query));
+
+            if (isMatch) {
+                order.style.display = ''; 
+            } else {
+                order.style.display = 'none';
+            }
+        });
+    });
+
 });
 
 

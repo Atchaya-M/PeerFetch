@@ -115,6 +115,29 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(deliveryLi);
         container.appendChild(li);
     });
+
+    const searchBar = document.getElementById('search-bar');
+const orderCards = Array.from(document.querySelectorAll('.order-card'));
+
+searchBar.addEventListener('input', () => {
+    const query = searchBar.value.toLowerCase();
+
+    orderCards.forEach(orderCard => {
+    
+        const fields = Array.from(orderCard.querySelectorAll('*'))
+                            .map(field => field.textContent.toLowerCase());
+
+
+        const isMatch = fields.some(field => field.includes(query));
+
+        if (isMatch) {
+            orderCard.style.display = ''; 
+        } else {
+            orderCard.style.display = 'none';
+        }
+    });
+});
+
 });
 
 
