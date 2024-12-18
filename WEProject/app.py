@@ -7,6 +7,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
+import re
 from dotenv import load_dotenv
 
 # Load environment variables from the .env file
@@ -139,7 +140,19 @@ def signup_post():
     data = request.json  
     email = data.get('email')
     password = data.get('password')
-    
+
+    # Validation checks
+    email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    if not re.match(email_regex, email):
+        return jsonify({'success': False, 'message': 'Invalid email format'}), 400
+
+    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    if not re.match(password_regex, password):
+        return jsonify({
+            'success': False,
+            'message': 'Password must be at least 8 characters long, contain one digit, one special character, and one uppercase letter.'
+        }), 400
+
     if not email or not password:
         return jsonify({'success': False, 'message': 'Email and password are required'}), 400
     
@@ -152,7 +165,6 @@ def signup_post():
     except sqlite3.IntegrityError:
         conn.close()
         return jsonify({'success': False, 'message': 'Email already exists'}), 409
-    
 
 @app.route('/myaccount')
 def myaccount():
@@ -164,12 +176,11 @@ def myaccount():
 
 @app.route('/change-password', methods=['POST'])
 def change_password():
-
     current_password = request.json.get('current_password')
     new_password = request.json.get('new_password')
 
     user_email = session.get('user_email')
-    stored_password = session.get('user_password') 
+    stored_password = session.get('user_password')
 
     if not user_email or not stored_password:
         return jsonify({'success': False, 'message': 'No user logged in'}), 400
@@ -177,15 +188,24 @@ def change_password():
     if current_password != stored_password:
         return jsonify({'success': False, 'message': 'Incorrect current password'}), 400
 
- 
+    # Password validation for the new password
+    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    if not re.match(password_regex, new_password):
+        return jsonify({
+            'success': False,
+            'message': 'New password must be at least 8 characters long, contain one digit, one special character, and one uppercase letter.'
+        }), 400
+
     conn = get_db_connection()
     conn.execute('UPDATE users SET password = ? WHERE email = ?', (new_password, user_email))
     conn.commit()
     conn.close()
 
+    # Update the password in the session
     session['user_password'] = new_password
 
     return jsonify({'success': True, 'message': 'Password changed successfully'}), 200
+
 
 @app.route('/check-current-password', methods=['POST'])
 def check_current_password():
