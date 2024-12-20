@@ -108,6 +108,57 @@ create_orders_table()
 create_delivery_table()
 init_db()
 
+def add_column_if_not_exists(database, table, column, column_type):
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    cursor.execute(f"PRAGMA table_info({table})")
+    columns = [info[1] for info in cursor.fetchall()]
+    
+    if column not in columns:
+        cursor.execute(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}")
+        print(f"Column '{column}' added to {table}.")
+    else:
+        print(f"Column '{column}' already exists in {table}.")
+    
+    conn.commit()
+    conn.close()
+
+def update_orders_table():
+    add_column_if_not_exists('orders.db', 'orders', 'otp', 'TEXT')
+
+def update_delivery_table():
+    add_column_if_not_exists('delivery.db', 'delivery', 'otp', 'TEXT')
+
+update_orders_table()
+update_delivery_table()
+
+
+def convert_otp_to_text():
+    try:
+        # Connect to the SQLite database
+        conn = sqlite3.connect("delivery.db")
+        cursor = conn.cursor()
+
+        # Update the OTP column to ensure it is stored as a string
+        cursor.execute("UPDATE delivery SET otp = CAST(otp AS TEXT)")
+
+        # Commit the changes
+        conn.commit()
+        print("OTP column updated to store values as text successfully.")
+
+    except sqlite3.Error as e:
+        print(f"Error while updating OTP column: {e}")
+
+    finally:
+        # Close the database connection
+        if conn:
+            conn.close()
+
+# Call the function
+convert_otp_to_text()
+
+
+
 # LOG IN
 
 
@@ -233,6 +284,9 @@ def load_items_from_csv():
     return items
 
 
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
@@ -263,10 +317,11 @@ def order():
 def save_order_to_db(order_details, email):
     conn = sqlite3.connect('orders.db')
     cursor = conn.cursor()
+    otp = generate_otp()
     cursor.execute('''
-        INSERT INTO orders (email, items, total_price, location, comments, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (email, str(order_details['selectedItems']), order_details['totalPrice'], order_details['location'], order_details['comments'], 'Pending'))
+        INSERT INTO orders (email, items, total_price, location, comments, status, otp)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (email, str(order_details['selectedItems']), order_details['totalPrice'], order_details['location'], order_details['comments'], 'Pending', otp))
     order_id = cursor.lastrowid
     conn.commit()
     conn.close()
@@ -294,7 +349,7 @@ def deliver_orders():
 
     cursor.execute("""
         SELECT * FROM orders 
-        WHERE email = ? AND status == ?
+        WHERE email != ? AND status == ?
     """, (session['user_email'], 'Pending'))
     orders = cursor.fetchall()
     return render_template('deliver.html', orders=orders)
@@ -310,13 +365,13 @@ def move_to_delivery():
     cursor1 = conn1.cursor()
     
     try:
-        
+        # Update status in orders table
         cursor.execute("UPDATE orders SET status = 'Accepted' WHERE id = ?", (order_id,))
-        
         conn.commit()
 
+        # Fetch order details including OTP
         cursor.execute("""
-            SELECT email, items, total_price, location, comments, timestamp
+            SELECT email, items, total_price, location, comments, timestamp, otp
             FROM orders
             WHERE id = ?
         """, (order_id,))
@@ -330,22 +385,20 @@ def move_to_delivery():
         if not user_email:
             return jsonify({'success': False, 'error': 'User email not found in session.'})
 
-        _, items, total_price, location, comments, timestamp = order_data
-
+        email, items, total_price, location, comments, timestamp, otp = order_data
+        print("MOVING from order to delivery", otp)
+        # Insert into delivery table
         cursor1.execute("""
-            INSERT INTO delivery (order_id, email, items, total_price, location, comments, status, timestamp)
-            VALUES (?,?, ?, ?, ?, ?, ?, ?)
-        """, (order_id,user_email, items, total_price, location, comments, 'Accepted', timestamp))
+            INSERT INTO delivery (order_id, email, items, total_price, location, comments, status, timestamp, otp)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (order_id, user_email, items, total_price, location, comments, 'Accepted', timestamp, otp))
         conn1.commit()
 
         return jsonify({'success': True})
-
-        
     except Exception as e:
         conn.rollback()
         conn1.rollback()
         return jsonify({'success': False, 'error': str(e)})
-
     finally:
         conn1.close()
         conn.close()
@@ -364,23 +417,29 @@ def reorder():
         conn = sqlite3.connect("orders.db")
         cursor = conn.cursor()
         
+        # Fetch the original order details
         cursor.execute("SELECT * FROM orders WHERE id = ?", (order_id,))
         order = cursor.fetchone()
         
         if not order:
             return jsonify({"success": False, "error": "Order not found"})
+        
+        # Generate a new OTP
+        otp = generate_otp()
+        
+        # Insert the new order with the generated OTP
         cursor.execute("""
-            INSERT INTO orders (email, items, total_price, location, comments, status)
-            VALUES (?, ?, ?, ?, ?,?)
-        """, (order[1],order[2], order[3], order[4], order[5], "Pending"))
+            INSERT INTO orders (email, items, total_price, location, comments, status, otp)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (order[1], order[2], order[3], order[4], order[5], "Pending", otp))
         
         conn.commit()
         conn.close()
-        return jsonify({"success": True})
+        # Respond with success and the new OTP
+        return jsonify({"success": True, "otp": otp})
     except Exception as e:
         print("Error reordering:", e)
         return jsonify({"success": False, "error": "Database error"})
-    
 
 # MY DELIVERIES
 @app.route("/mydeliveries")
@@ -389,23 +448,76 @@ def my_deliveries():
     
     if not user_email:
         return redirect(url_for('signin'))  
-
     
-
     try:
         conn = sqlite3.connect("delivery.db")
         cursor = conn.cursor()
 
+        # Fetch deliveries
         cursor.execute("SELECT * FROM delivery WHERE email = ?", (user_email,))
         deliveries = cursor.fetchall()
-        
         conn.close()
+        # Debugging: Check fetched data
         return render_template("mydeliveries.html", deliveries=deliveries, user_email=user_email)
     
+    except sqlite3.Error as db_error:
+        print(f"Database Error: {db_error}")
+        return render_template("error.html", message="Database error occurred.")
     except Exception as e:
+        print(f"Unexpected Error: {e}")
+        return render_template("error.html", message="An unexpected error occurred.")
+
+#OTP
+@app.route("/update_status/<int:delivery_id>", methods=['POST'])
+def update_status(delivery_id):
+    try:
+        conn = sqlite3.connect("delivery.db")
+        cursor = conn.cursor()
+        conn2 = sqlite3.connect("orders.db")
+        cursor2 = conn2.cursor()
+
+        # Fetch the current status and OTP for the delivery
+        cursor.execute("SELECT status, otp, order_id FROM delivery WHERE id = ?", (delivery_id,))
+        result = cursor.fetchone()
+        current_status, stored_otp, order_id = result if result else (None, None)
+
+        # Debug: Print current status and OTP
+        print(f"Current Status: {current_status}, Stored OTP: {stored_otp}")
+
+        # Determine the new status based on the current status
+        if current_status == 'Accepted':
+            new_status = 'Picked Up'
+        elif current_status == 'Picked Up':
+            otp = request.json.get('otp')  # Get OTP from the request
+            print(f"Received OTP: {otp}")  # Debug: Print received OTP
+            if otp and str(otp).strip() == str(stored_otp).strip():  # Compare as strings
+                new_status = 'Delivered'
+            else:
+                return jsonify({'success': False, 'error': 'Invalid OTP'}), 400
+        else:
+            new_status = 'Delivered'  # Or any other status logic
+
+        # Update the delivery status
+        print("order id", order_id)
+        print("new status", new_status)
+        cursor.execute("UPDATE delivery SET status = ? WHERE id = ?", (new_status, delivery_id))
+        conn.commit()  # Commit after updating delivery status
+
+        # Update the orders status
+        cursor2.execute("UPDATE orders SET status = ? WHERE id = ?", (new_status, order_id))
+        if cursor2.rowcount == 0:
+            print(f"No rows updated in orders table for order_id: {order_id}")
+        conn2.commit()  # Commit after updating orders status
+
+        # Check how many rows are affected in orders table
         
-        print(f"Error fetching deliveries: {e}")
-        return render_template("error.html", message="Failed to load deliveries.")
+        conn.close()
+        conn2.close()
+
+        return jsonify({'success': True, 'new_status': new_status})
+    except Exception as e:
+        print(f"Error updating status: {e}")
+        return jsonify({'success': False}), 500
 
 
 # FORGOT PASSWORD

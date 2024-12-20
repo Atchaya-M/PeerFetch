@@ -117,3 +117,80 @@ searchBar.addEventListener('input', () => {
 
 
 });
+
+
+
+//otp 
+document.addEventListener('DOMContentLoaded', function() {
+    const changeStatusBtns = document.querySelectorAll('.change-status-btn');
+
+    changeStatusBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const deliveryId = btn.getAttribute('data-delivery-id');
+            const currentStatus = btn.closest('.delivery-card').querySelector('.status').textContent.trim();
+
+            // Prompt user to confirm status change
+            if (confirm("Do you want to change status?")) {
+                if (currentStatus === 'Accepted') {
+                    // Change status to 'Picked Up'
+                    updateStatus(deliveryId, 'Picked Up');
+                } else if (currentStatus === 'Picked Up') {
+                    // OTP verification for 'Delivered'
+                    const otp = prompt("Enter OTP to change status to Delivered");
+                    if (otp) {
+                        verifyOtpAndUpdateStatus(deliveryId, otp);
+                    }
+                }
+            }
+        });
+    });
+});
+
+function updateStatus(deliveryId, newStatus) {
+    fetch(`/update_status/${deliveryId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ delivery_id: deliveryId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status displayed in the UI
+            const statusElement = document.querySelector(`[data-delivery-id="${deliveryId}"]`).closest('.delivery-card').querySelector('.status');
+            statusElement.textContent = data.new_status;
+        } else {
+            alert('Error changing status: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while changing the status.');
+    });
+}
+
+function verifyOtpAndUpdateStatus(deliveryId, otp) {
+    fetch(`/update_status/${deliveryId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ otp: otp }), // Ensure OTP is sent correctly
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Status updated to Delivered');
+            // Update the status in the UI
+            const statusElement = document.querySelector(`[data-delivery-id="${deliveryId}"]`).closest('.delivery-card').querySelector('.status');
+            statusElement.textContent = data.new_status;
+        } else {
+            alert('Invalid OTP');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while changing the status.');
+    });
+}

@@ -45,12 +45,13 @@
                         <p>
                             <strong>Status:</strong>
                             <span class="status {{ 'pending' if order[6] == 'Pending' else '' }} 
-                                                  {{ 'completed' if order[6] == 'Completed' else '' }} 
+                                                  {{ 'delivered' if order[6] == 'Delivered' else '' }} 
                                                   {{ 'accepted' if order[6] == 'Accepted' else '' }} 
                                                   {{ 'picked-up' if order[6] == 'Picked Up' else '' }}">
                                 {{ order[6] }}
                             </span>
                         </p>
+                        <p><strong>OTP:</strong> {{ order[8] }}</p>
                     </div>
                 </div>
                 <button class="reorder-btn" data-order-id="{{ order[0] }}">Reorder</button>
