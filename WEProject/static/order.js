@@ -183,9 +183,10 @@ document.getElementById("place-order").addEventListener("click", function () {
         },
         body: JSON.stringify(orderDetails),
     })
-    .then((response) => {
-        if (response.ok && totalPrice > 0) {
-            alert("Order placed successfully!");
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.success && totalPrice > 0) {
+            alert(`Order placed successfully! Your OTP for the order is: ${data.otp}`);
             window.location.href = "/myorders"; 
         } else {
             alert("Failed to place order. Please try again.");

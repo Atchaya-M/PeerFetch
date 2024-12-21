@@ -304,11 +304,12 @@ def order():
             if int(i["quantity"]) > 0:
                 temp_order_details.append(i)
         order_details["selectedItems"] = temp_order_details
-        order_id = save_order_to_db(order_details, email)
+        order_id, otp = save_order_to_db(order_details, email)
 
         session['selected_items'] = selected_items
         session['total_price'] = total_price
         session['order_id'] = order_id
+        return {"success": True, "otp": otp}
 
     selected_items = session.get('selected_items', [])
     total_price = session.get('total_price', 0.00)
@@ -325,7 +326,7 @@ def save_order_to_db(order_details, email):
     order_id = cursor.lastrowid
     conn.commit()
     conn.close()
-    return order_id
+    return order_id, otp
 
 
 @app.route('/myorders')
