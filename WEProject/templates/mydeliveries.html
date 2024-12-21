@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='mydeliveries.css') }}">
     <title>My Deliveries</title>
 </head>
+
 <body>
     <header>
         <nav>
@@ -21,43 +23,54 @@
     </header>
 
     <div class="container">
-        
+
         <h1>My Deliveries</h1>
         <div>
             <input type="text" id="search-bar" placeholder="Search for items...">
         </div>
         {% if deliveries %}
-            <div class="delivery-list">
-                {% for delivery in deliveries %}
-                    <div class="delivery-card">
-                        <h3>Delivery ID: {{ delivery[0] }}</h3>
-                        <ul class="items-container" data-items="{{ delivery[3] }}"></ul>
-                        <p><strong>Order ID:</strong> {{ delivery[1] }}</p>
-                        <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ delivery[4] }}">{{ delivery[4] }}</span></p>
-                        <p><strong>Location:</strong> {{ delivery[5] }}</p>
-                        <p><strong>Comments:</strong> {{ delivery[6] }}</p>
-                        <p><strong>Date:</strong> {{ delivery[8].split(' ')[0] }}</p>
-                        <p><strong>Time:</strong> {{ delivery[8].split(' ')[1] }}</p>
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="status {{ 'pending' if delivery[7] == 'Pending' else '' }} 
-                                                  {{ 'completed' if delivery[7] == 'Completed' else '' }} 
+        <div class="delivery-list">
+            {% for delivery in deliveries %}
+            <div class="delivery-card">
+                <h3>Delivery ID: {{ delivery[0] }}</h3>
+                <ul class="items-container" data-items="{{ delivery[3] }}"></ul>
+                <p><strong>Order ID:</strong> {{ delivery[1] }}</p>
+                <p><strong>Items Price:</strong> ₹<span id="total-price" data-price="{{ delivery[4] }}">{{ delivery[4]
+                        }}</span></p>
+                <p><strong>Location:</strong> {{ delivery[5] }}</p>
+                <p><strong>Comments:</strong> {{ delivery[6] }}</p>
+                <p><strong>Date:</strong> {{ delivery[8].split(' ')[0] }}</p>
+                <p><strong>Time:</strong> {{ delivery[8].split(' ')[1] }}</p>
+                <p>
+                    <strong>Status:</strong>
+                    <span class="status {{ 'pending' if delivery[7] == 'Pending' else '' }} 
+                                                  {{ 'delivered' if delivery[7] == 'Delivered' else '' }} 
                                                   {{ 'accepted' if delivery[7] == 'Accepted' else '' }} 
                                                   {{ 'picked-up' if delivery[7] == 'Picked Up' else '' }}">
-                                {{ delivery[7] }}
-                            </span>
-                        </p>
-                        <button class="change-status-btn" data-delivery-id="{{ delivery[0] }}">
-                            Change Status
-                        </button>
-                    </div>
-                {% endfor %}
+                        {{ delivery[7] }}
+                    </span>
+                </p>
+                {% if delivery[7] != 'Delivered' %}
+                <button class="change-status-btn" data-delivery-id="{{ delivery[0] }}">
+                    {% if delivery[7] == 'Accepted' %}
+                        Picked Up
+                    {% elif delivery[7] == 'Picked Up' %}
+                        Completed
+                    {% else %}
+                        Change Status
+                    {% endif %}
+                </button>
+                
+                {% endif %}
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <p>No deliveries found for your email.</p>
+        <p>No deliveries found for your email.</p>
         {% endif %}
     </div>
 
     <script src="{{ url_for('static', filename='mydeliveries.js') }}"></script>
 </body>
+
 </html>
