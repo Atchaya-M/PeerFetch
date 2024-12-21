@@ -165,7 +165,7 @@ function updateTotalPrice() {
 document.getElementById("place-order").addEventListener("click", function () {
     const selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
     const totalPrice = parseFloat(localStorage.getItem("totalPrice") || "0.00");
-    const location = document.getElementById("location").value;
+    const location = document.querySelector('input[name="location"]:checked').value;
     const comments = document.getElementById("comments").value;
 
     const orderDetails = {
