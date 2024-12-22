@@ -55,7 +55,10 @@
                         <p><strong>OTP:</strong> {{ order[8] }}</p>
                     </div>
                 </div>
+                
                 <button class="reorder-btn" data-order-id="{{ order[0] }}">Reorder</button>
+                <button class="chat-btn" onclick="window.location.href='{{ url_for('chat', orderId=order[0], role='customer') }}'">Chat</button>
+       
             </div>
 
             {% endfor %}

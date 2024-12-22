@@ -125,7 +125,7 @@ nav {
     color: orange;  
 }
 
-.reorder-btn {
+.reorder-btn,.chat-btn {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
@@ -137,17 +137,17 @@ nav {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.reorder-btn:hover {
+.reorder-btn:hover,.chat-btn:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-.reorder-btn:active {
+.reorder-btn:active,.chat-btn:active {
     background-color: #003d80;
     transform: scale(0.95);
 }
 
-.reorder-btn:focus {
+.reorder-btn:focus,.chat-btn:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
 }

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #4A4A4A;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #777;
+        }
+
+        #order-id, #role {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Chat Room */
+        #chat-room {
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #chat-room p {
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin: 5px 0;
+            font-size: 1rem;
+            background-color: #f0f0f0;
+            word-wrap: break-word;
+        }
+
+        #chat-room .customer {
+            background-color: #e1f7d5;
+            align-self: flex-start;
+        }
+
+        #chat-room .delivery {
+            background-color: #d1e7f6;
+            align-self: flex-end;
+        }
+
+        /* Message Form */
+        #message-form {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        #message-input {
+            width: 85%;
+            padding: 12px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        #message-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        #send-button {
+            width: 12%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #send-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Leave button */
+        #leave-button {
+            padding: 12px 20px;
+            background-color: #f44336;
+            color: white;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #leave-button:hover {
+            background-color: #e53935;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #chat-room {
+                max-width: 90%;
+                height: 300px;
+            }
+
+            #message-form {
+                flex-direction: column;
+            }
+
+            #message-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #send-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <p>Order ID: <strong id="order-id">{{ order_id }}</strong></p>
+    <p>Role: <strong id="role">{{ role }}</strong></p>
+
+    <div id="chat-room"></div>
+
+    <form id="message-form" onsubmit="sendMessage(event)">
+        <input id="message-input" type="text" placeholder="Type a message..." required>
+        <button id="send-button" type="submit">Send</button>
+    </form>
+
+    <!-- Leave button -->
+    <button id="leave-button" onclick="leaveRoom()">Leave Room</button>
+
+    <script>
+        const socket = io();
+
+        // Retrieve order ID and role directly from DOM
+        const orderId = document.getElementById('order-id').textContent.trim();
+        const role = document.getElementById('role').textContent.trim();
+
+        // Define role names
+        const roleName = role === 'delivery' ? 'Delivery Person' : 'Customer';
+
+        // Debugging logs
+        console.log("Order ID:", orderId);
+        console.log("Role:", roleName);
+
+        // Join the chat room
+        socket.emit('join', { order_id: orderId, role: roleName });
+
+        // Listen for incoming messages
+        const chatRoom = document.getElementById('chat-room');
+        socket.on('message', (data) => {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `${data.role}: ${data.msg}`;
+            chatRoom.appendChild(messageElement);
+            chatRoom.scrollTop = chatRoom.scrollHeight; // Auto-scroll to bottom
+        });
+
+        // Send a message
+        function sendMessage(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+
+            // Debug logs
+            console.log("Sending message:", message);
+
+            // Emit message to the server
+            socket.emit('send_message', { order_id: orderId, message, role: roleName });
+            messageInput.value = '';
+        }
+
+        // Leave the chat room
+        function leaveRoom() {
+            // Emit leave event to the server
+            socket.emit('leave', { order_id: orderId, role: roleName });
+
+            // Redirect based on role
+            if (role === 'delivery') {
+                window.location.href = '/deliver';  // Redirect to the Deliver page
+            } else {
+                window.location.href = '/myorders';  // Redirect to the My Orders page
+            }
+        }
+    </script>
+</body>
+</html>

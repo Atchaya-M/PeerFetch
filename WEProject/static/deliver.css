@@ -96,7 +96,7 @@ main {
     text-align: center;
 }
 
-.deliver-btn {
+.deliver-btn,.chat-btn {
     background-color: #3498db;
     color: #fff;
     padding: 10px 20px;
@@ -107,7 +107,7 @@ main {
     transition: background-color 0.2s ease;
 }
 
-.deliver-btn:hover {
+.deliver-btn:hover,.chat-btn:hover {
     background-color: #2980b9;
 }
 
