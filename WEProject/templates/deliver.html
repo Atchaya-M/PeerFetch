@@ -48,7 +48,8 @@
                         </div>
                         <div class="order-actions">
                             <button class="deliver-btn" data-order-id="{{ order[0] }}">Deliver Now</button>
-
+                            <button class="chat-btn" onclick="window.location.href='{{ url_for('chat', orderId=order[0], role='delivery') }}'">Chat</button>
+        
                         </div>
                     </div>
                 {% endfor %}

@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, join_room, leave_room, emit,send
 import sqlite3
 import csv
 import random
@@ -19,7 +21,8 @@ SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
+socketio = SocketIO(app, cors_allowed_origins="*")
+users = {}  # Temporary storage for users, replace with database in production
 
 
 def get_db_connection():
@@ -43,6 +46,33 @@ def signup():
 def homepage():
     return render_template('homepage.html') 
 
+@app.route('/chat/<orderId>/<role>')
+def chat(orderId, role):
+    return render_template('chat.html', order_id=orderId, role=role)
+
+# Event for joining a room
+@socketio.on('join')
+def handle_join(data):
+    order_id = data.get('order_id')  # Extract order_id
+    role = data.get('role')          # Extract role
+    join_room(order_id)  # Join room based on order ID
+    send({'role': role , 'msg': 'Joined the room.'}, room=order_id)
+
+# Event for sending a message
+@socketio.on('send_message')
+def handle_message(data):
+    order_id = data.get('order_id')  # Extract order_id
+    role = data.get('role')          # Extract role
+    message = data.get('message')   # Extract message
+    send({'role': role, 'msg': message}, room=order_id)
+
+# Event for leaving a room
+@socketio.on('leave')
+def handle_leave(data):
+    order_id = data.get('order_id')  # Extract order_id
+    role = data.get('role')          # Extract role
+    leave_room(order_id)  # Leave room based on order ID
+    send({'role': role, 'msg': 'Left the room.'}, room=order_id)
 
 DATABASE = 'users.db'
 
@@ -57,6 +87,19 @@ def init_db():
         password TEXT NOT NULL
     )
     ''')
+    
+     # Add reviews table
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item_name TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        name TEXT,
+        comment TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
 
 
     conn.commit()
@@ -197,7 +240,7 @@ def signup_post():
     if not re.match(email_regex, email):
         return jsonify({'success': False, 'message': 'Invalid email format'}), 400
 
-    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    password_regex = r'^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{8,}$'
     if not re.match(password_regex, password):
         return jsonify({
             'success': False,
@@ -240,7 +283,7 @@ def change_password():
         return jsonify({'success': False, 'message': 'Incorrect current password'}), 400
 
     # Password validation for the new password
-    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+    password_regex = r'^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{8,}$'
     if not re.match(password_regex, new_password):
         return jsonify({
             'success': False,
@@ -276,14 +319,45 @@ def logout():
 # ORDER PAGE
 def load_items_from_csv():
     items = []
-    with open('items.csv', 'r') as file:
+    with open('items.csv', 'r',encoding='utf-8-sig') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             row["Price"] = float(row["Price"][2:].strip())
             items.append(row)
     return items
 
+# Ratings page
+@app.route('/ratings')
+def ratings():
+    items = load_items_from_csv()
+    return render_template('ratings.html', items=items)
 
+# Submit review
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    item_name = request.form['item_name']
+    rating = request.form['rating']
+    name = request.form.get('name', 'Anonymous')
+    comment = request.form.get('comment', '')
+
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    c.execute('INSERT INTO reviews (item_name, rating, name, comment) VALUES (?, ?, ?, ?)',
+              (item_name, rating, name, comment))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('ratings'))
+
+# Read reviews
+@app.route('/read_reviews/<item_name>')
+def read_reviews(item_name):
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    c.execute('SELECT * FROM reviews WHERE item_name = ?', (item_name,))
+    reviews = c.fetchall()
+    conn.close()
+    return render_template('review.html', item_name=item_name, reviews=reviews)
 def generate_otp():
     return str(random.randint(100000, 999999))
 
@@ -590,6 +664,5 @@ def forgot_password():
     else:
         return jsonify({'success': False, 'message': 'Email not found'}), 404
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    socketio.run(app, debug=True)

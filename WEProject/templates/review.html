@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews for {{ item_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='review.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='myorders.css') }}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('homepage') }}" id="homepage">Home Page</a></li>
+                <li><a href="{{ url_for('order') }}" id="order">Order</a></li>
+                <li><a href="{{ url_for('myorders_page') }}" id="myorders">My Orders</a></li>
+                <li><a href="{{ url_for('deliver_orders') }}" id="deliver">Deliver</a></li>
+                <li><a href="{{ url_for('my_deliveries') }}" id="mydeliveries">My Deliveries</a></li>
+                <li><a href="{{ url_for('ratings') }}" id="ratings">Ratings</a></li>
+                <li><a href="{{ url_for('myaccount') }}" id="myaccount">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Reviews for {{ item_name }}</h1>
+    <a href="{{ url_for('ratings') }}">
+        <button class="action-button">Back to Items</button>
+    </a>
+    <div class="review-container">
+        {% for review in reviews %}
+        <div class="review-card">
+            <div class="review-header">
+                <span class="review-rating">
+                    {% for i in range(review[2]) %}★{% endfor %}
+                    {% for i in range(5 - review[2]) %}☆{% endfor %}
+                </span>
+                <span class="review-name">{{ review[3] if review[3] else 'Anonymous' }}</span>
+            </div>
+            <p class="review-comment">{{ review[4] if review[4] else 'No comment provided.' }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

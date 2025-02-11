@@ -1,0 +1,134 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.item-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.item-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+
+.image-wrapper {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.image-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.action-button {
+    background-color: #3c3f41;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+.review-form {
+    margin-top: 15px;
+}
+
+
+.review-input,
+.review-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.review-textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.star-label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: lightgray;
+}
+
+.star-label:hover,
+.star-label:hover ~ .star-label {
+    color: gold;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked + label,
+input[type="radio"]:checked + label ~ label {
+    color: gold;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating .star-label {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating input:checked ~ .star-label,
+.star-rating .star-label:hover,
+.star-rating .star-label:hover ~ .star-label {
+    color: #f39c12;
+}
