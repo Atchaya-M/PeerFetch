@@ -87,6 +87,19 @@ def init_db():
         password TEXT NOT NULL
     )
     ''')
+    
+     # Add reviews table
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item_name TEXT NOT NULL,
+        rating INTEGER NOT NULL,
+        name TEXT,
+        comment TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
 
 
     conn.commit()
@@ -306,14 +319,45 @@ def logout():
 # ORDER PAGE
 def load_items_from_csv():
     items = []
-    with open('items.csv', 'r') as file:
+    with open('items.csv', 'r',encoding='utf-8-sig') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             row["Price"] = float(row["Price"][2:].strip())
             items.append(row)
     return items
 
+# Ratings page
+@app.route('/ratings')
+def ratings():
+    items = load_items_from_csv()
+    return render_template('ratings.html', items=items)
 
+# Submit review
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    item_name = request.form['item_name']
+    rating = request.form['rating']
+    name = request.form.get('name', 'Anonymous')
+    comment = request.form.get('comment', '')
+
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    c.execute('INSERT INTO reviews (item_name, rating, name, comment) VALUES (?, ?, ?, ?)',
+              (item_name, rating, name, comment))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('ratings'))
+
+# Read reviews
+@app.route('/read_reviews/<item_name>')
+def read_reviews(item_name):
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    c.execute('SELECT * FROM reviews WHERE item_name = ?', (item_name,))
+    reviews = c.fetchall()
+    conn.close()
+    return render_template('review.html', item_name=item_name, reviews=reviews)
 def generate_otp():
     return str(random.randint(100000, 999999))
 
