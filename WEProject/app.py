@@ -240,7 +240,7 @@ def signup_post():
     if not re.match(email_regex, email):
         return jsonify({'success': False, 'message': 'Invalid email format'}), 400
 
-    password_regex = r'^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{8,}$'
+    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
     if not re.match(password_regex, password):
         return jsonify({
             'success': False,
@@ -283,7 +283,7 @@ def change_password():
         return jsonify({'success': False, 'message': 'Incorrect current password'}), 400
 
     # Password validation for the new password
-    password_regex = r'^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{8,}$'
+    password_regex = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
     if not re.match(password_regex, new_password):
         return jsonify({
             'success': False,
@@ -316,7 +316,7 @@ def logout():
     session.clear()
     return redirect(url_for('signin'))
 
-# ORDER PAGE
+# LOADING THE CSV FILE FOR ORDER PAGE,RATINGS PAGE
 def load_items_from_csv():
     items = []
     with open('items.csv', 'r',encoding='utf-8-sig') as file:
