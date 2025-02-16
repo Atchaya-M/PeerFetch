@@ -1,6 +1,15 @@
-Name,Brand,Price,Picture
-Ball Pens - Blue,Octane,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYcONhq2fPGMOo2PIRbPzFSk5uBEgLvTdVbw&s
-Gel Pens - Black,Reynolds,Rs 20,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRe4Ojj6YItuRYQdnse_AxbVwrGvO_J4Z2-Q&s
-Notebooks - Ruled,Classmate,Rs 60,https://stationerydukan.com/wp-content/uploads/2023/03/Classmate-Notebook-8.jpg
-Pencils,Apsara,Rs 5,https://rukminim2.flixcart.com/image/850/1000/xif0q/pencil/y/s/w/apsara-platinum-apsara-original-imaguqjcwsq3eyzf.jpeg?q=90&crop=false
-Pencil,Nataraj,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv2iW2OqAMytZGtCbB7NK4J9qgINJjSIJMYw&s
+Name,Brand,Price,Picture,College
+Ball Pens – Blue,Octane,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYcONhq2fPGMOo2PIRbPzFSk5uBEgLvTdVbw&s,college1
+Gel Pens – Black,Reynolds,Rs 20,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRe4Ojj6YItuRYQdnse_AxbVwrGvO_J4Z2-Q&s,college1
+Notebooks – Ruled,Classmate,Rs 60,https://stationerydukan.com/wp-content/uploads/2023/03/Classmate-Notebook-8.jpg,college1
+Pencils,Apsara,Rs 5,https://rukminim2.flixcart.com/image/850/1000/xif0q/pencil/y/s/w/apsara-platinum-apsara-original-imaguqjcwsq3eyzf.jpeg?q=90&crop=false,college1
+Ball Pens – Blue,Octane,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYcONhq2fPGMOo2PIRbPzFSk5uBEgLvTdVbw&s,college2
+Gel Pens – Black,Reynolds,Rs 20,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRe4Ojj6YItuRYQdnse_AxbVwrGvO_J4Z2-Q&s,college2
+Notebooks – Ruled,Classmate,Rs 60,https://stationerydukan.com/wp-content/uploads/2023/03/Classmate-Notebook-8.jpg,college2
+Pencils,Apsara,Rs 5,https://rukminim2.flixcart.com/image/850/1000/xif0q/pencil/y/s/w/apsara-platinum-apsara-original-imaguqjcwsq3eyzf.jpeg?q=90&crop=false,college2
+Pencil,Nataraj,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv2iW2OqAMytZGtCbB7NK4J9qgINJjSIJMYw&s,college2
+Ball Pens – Blue,Octane,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYcONhq2fPGMOo2PIRbPzFSk5uBEgLvTdVbw&s,college3
+Gel Pens – Black,Reynolds,Rs 20,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRe4Ojj6YItuRYQdnse_AxbVwrGvO_J4Z2-Q&s,college3
+Notebooks – Ruled,Classmate,Rs 60,https://stationerydukan.com/wp-content/uploads/2023/03/Classmate-Notebook-8.jpg,college3
+Pencils,Apsara,Rs 5,https://rukminim2.flixcart.com/image/850/1000/xif0q/pencil/y/s/w/apsara-platinum-apsara-original-imaguqjcwsq3eyzf.jpeg?q=90&crop=false,college3
+Pencil,Nataraj,Rs 10,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv2iW2OqAMytZGtCbB7NK4J9qgINJjSIJMYw&s,college3

@@ -151,6 +151,47 @@ create_orders_table()
 create_delivery_table()
 init_db()
 
+def init_locations_db():
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+
+    # Create locations table
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS locations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        college TEXT NOT NULL,
+        location TEXT UNIQUE NOT NULL
+    )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# Run this function to create the locations table
+init_locations_db()
+
+def insert_locations():
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+
+    colleges = ["college1", "college2", "college3"]
+    locations_per_college = 5
+
+    # Insert unique locations for each college
+    for college in colleges:
+        for i in range(1, locations_per_college + 1):
+            location_name = f"{college}-location{i}"
+            try:
+                c.execute("INSERT INTO locations (college, location) VALUES (?, ?)", (college, location_name))
+            except sqlite3.IntegrityError:
+                print(f"Location {location_name} already exists, skipping...")
+
+    conn.commit()
+    conn.close()
+
+# Run this function to insert locations
+insert_locations()
+
 def add_column_if_not_exists(database, table, column, column_type):
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
@@ -168,12 +209,25 @@ def add_column_if_not_exists(database, table, column, column_type):
 
 def update_orders_table():
     add_column_if_not_exists('orders.db', 'orders', 'otp', 'TEXT')
+    add_column_if_not_exists('orders.db', 'orders', 'college', 'TEXT')
 
 def update_delivery_table():
     add_column_if_not_exists('delivery.db', 'delivery', 'otp', 'TEXT')
+    add_column_if_not_exists('delivery.db', 'delivery', 'college', 'TEXT')
 
+def update_users_table():
+    add_column_if_not_exists(DATABASE, 'users', 'college', 'TEXT')
+
+def update_reviews_table():
+    add_column_if_not_exists(DATABASE, 'reviews', 'college', 'TEXT')
+
+create_orders_table()
+create_delivery_table()
+init_db()
 update_orders_table()
 update_delivery_table()
+update_users_table()
+update_reviews_table()
 
 
 def convert_otp_to_text():
@@ -210,17 +264,19 @@ def login():
     data = request.get_json() 
     email = data.get('email')
     password = data.get('password')
+    college = data.get('college')
     
     if not email or not password:
         return jsonify({'success': False, 'message': 'Email and password are required'}), 400
     
     conn = get_db_connection()
-    user = conn.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password)).fetchone()
+    user = conn.execute('SELECT * FROM users WHERE email = ? AND password = ? AND college = ?', (email, password, college)).fetchone()
     conn.close()
     
     if user:
         session['user_email'] = email
         session['user_password'] = password
+        session['college'] = college
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Invalid credentials'}), 200
@@ -232,8 +288,10 @@ def login():
 @app.route('/signup', methods=['POST'])
 def signup_post():  
     data = request.json  
+    print("Received Data:", data)
     email = data.get('email')
     password = data.get('password')
+    college = data.get('college')
 
     # Validation checks
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
@@ -252,7 +310,7 @@ def signup_post():
     
     conn = get_db_connection()
     try:
-        conn.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
+        conn.execute('INSERT INTO users (email, password, college) VALUES (?, ?, ?)', (email, password, college))
         conn.commit()
         conn.close()
         return jsonify({'success': True, 'message': 'Signup successful'})
@@ -263,7 +321,8 @@ def signup_post():
 @app.route('/myaccount')
 def myaccount():
     user_email = session.get('user_email')
-    return render_template('myaccount.html', user_email=user_email)
+    college = session.get('college')
+    return render_template('myaccount.html', user_email=user_email, college=college)
 
 
 # CHANGING PASSWORD
@@ -317,24 +376,27 @@ def logout():
     return redirect(url_for('signin'))
 
 # LOADING THE CSV FILE FOR ORDER PAGE,RATINGS PAGE
-def load_items_from_csv():
+def load_items_from_csv(user_college):
     items = []
-    with open('items.csv', 'r',encoding='utf-8-sig') as file:
+    with open('items.csv', 'r', encoding='utf-8-sig') as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
-            row["Price"] = float(row["Price"][2:].strip())
-            items.append(row)
+            if row["College"] == user_college:  # Filter by college
+                row["Price"] = float(row["Price"][2:].strip())  # Convert price to float
+                items.append(row)
     return items
 
 # Ratings page
 @app.route('/ratings')
 def ratings():
-    items = load_items_from_csv()
+    college = session.get('college')
+    items = load_items_from_csv(college)
     return render_template('ratings.html', items=items)
 
 # Submit review
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
+    college = session.get('college')
     item_name = request.form['item_name']
     rating = request.form['rating']
     name = request.form.get('name', 'Anonymous')
@@ -342,8 +404,8 @@ def submit_review():
 
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
-    c.execute('INSERT INTO reviews (item_name, rating, name, comment) VALUES (?, ?, ?, ?)',
-              (item_name, rating, name, comment))
+    c.execute('INSERT INTO reviews (item_name, rating, name, comment, college) VALUES (?, ?, ?, ?, ?)',
+              (item_name, rating, name, comment, college))
     conn.commit()
     conn.close()
 
@@ -352,9 +414,10 @@ def submit_review():
 # Read reviews
 @app.route('/read_reviews/<item_name>')
 def read_reviews(item_name):
+    college = session.get('college')
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
-    c.execute('SELECT * FROM reviews WHERE item_name = ?', (item_name,))
+    c.execute('SELECT * FROM reviews WHERE item_name = ? AND college = ?', (item_name,college))
     reviews = c.fetchall()
     conn.close()
     return render_template('review.html', item_name=item_name, reviews=reviews)
@@ -364,39 +427,55 @@ def generate_otp():
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
-    items = load_items_from_csv()  
+    college = session.get('college')
+    items = load_items_from_csv(college)  
+    
+    # Fetch locations for the specific college
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT location FROM locations WHERE college = ?', (college,))
+    locations = [row[0] for row in cursor.fetchall()]
+    conn.close()
+
     if request.method == 'POST':
-        selected_items = request.json.get('selectedItems', [])
-        total_price = request.json.get('totalPrice', 0.00)
-        location = request.json.get('location', '')  
-        comments = request.json.get('comments', '')
         order_details = request.json
+        selected_items = order_details.get('selectedItems', [])
+        total_price = order_details.get('totalPrice', 0.00)
+        location = order_details.get('location', '')  
+        comments = order_details.get('comments', '')
         email = session.get('user_email')
-       
-        temp_order_details = []
-        for i in order_details["selectedItems"]:
-            if int(i["quantity"]) > 0:
-                temp_order_details.append(i)
-        order_details["selectedItems"] = temp_order_details
+
+        # Filter items with quantity > 0
+        selected_items = [item for item in selected_items if int(item["quantity"]) > 0]
+        order_details["selectedItems"] = selected_items
+        
+        if not selected_items:
+            return {"success": False, "message": "No items selected."}, 400
+        if location not in locations:
+            return {"success": False, "message": "Invalid location selected."}, 400
+
         order_id, otp = save_order_to_db(order_details, email)
 
         session['selected_items'] = selected_items
         session['total_price'] = total_price
         session['order_id'] = order_id
+
         return {"success": True, "otp": otp}
 
     selected_items = session.get('selected_items', [])
     total_price = session.get('total_price', 0.00)
-    return render_template('order.html', items=items, selected_items=selected_items, total_price=total_price)
+
+    return render_template('order.html', items=items, selected_items=selected_items, total_price=total_price, locations=locations)
 
 def save_order_to_db(order_details, email):
     conn = sqlite3.connect('orders.db')
     cursor = conn.cursor()
     otp = generate_otp()
+    college = session.get('college')
     cursor.execute('''
-        INSERT INTO orders (email, items, total_price, location, comments, status, otp)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (email, str(order_details['selectedItems']), order_details['totalPrice'], order_details['location'], order_details['comments'], 'Pending', otp))
+        INSERT INTO orders (email, items, total_price, location, comments, status, otp, college)
+        VALUES (?, ?, ?, ?, ?, ?, ?,?)
+    ''', (email, str(order_details['selectedItems']), order_details['totalPrice'], order_details['location'], order_details['comments'], 'Pending', otp, college))
     order_id = cursor.lastrowid
     conn.commit()
     conn.close()
@@ -421,11 +500,11 @@ def myorders_page():
 def deliver_orders():
     conn = sqlite3.connect('orders.db')
     cursor = conn.cursor()
-
+    college = session.get('college')
     cursor.execute("""
         SELECT * FROM orders 
-        WHERE email != ? AND status == ?
-    """, (session['user_email'], 'Pending'))
+        WHERE email != ? AND status == ? AND college = ?
+    """, (session['user_email'], 'Pending', college))
     orders = cursor.fetchall()
     return render_template('deliver.html', orders=orders)
 
@@ -482,6 +561,7 @@ def move_to_delivery():
 # REORDER
 @app.route("/reorder", methods=["POST"])
 def reorder():
+    college = session.get('college')
     data = request.get_json()
     order_id = data.get("order_id")
     
@@ -504,9 +584,9 @@ def reorder():
         
         # Insert the new order with the generated OTP
         cursor.execute("""
-            INSERT INTO orders (email, items, total_price, location, comments, status, otp)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (order[1], order[2], order[3], order[4], order[5], "Pending", otp))
+            INSERT INTO orders (email, items, total_price, location, comments, status, otp, college)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (order[1], order[2], order[3], order[4], order[5], "Pending", otp, college))
         
         conn.commit()
         conn.close()

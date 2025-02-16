@@ -5,6 +5,7 @@ function redirectToLogin() {
 function signupUser() {
     const email = document.querySelector('input[name="email"]').value;
     const password = document.querySelector('input[name="password"]').value;
+    const college = document.querySelector('select[name="college"]').value;
     
    
     fetch('/signup', {
@@ -14,7 +15,8 @@ function signupUser() {
         },
         body: JSON.stringify({
             email: email,
-            password: password
+            password: password,
+            college: college
         })
     })
     .then(response => response.json())

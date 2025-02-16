@@ -1,90 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='order.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='order.css') }}"
+    />
     <title>Order Page</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#" id="homepage">Home Page</a></li>
-                <li><a href="#" id="order">Order</a></li>
-                <li><a href="#" id="myorders">My Orders</a></li>
-                <li><a href="#" id="deliver">Deliver</a></li>
-                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
-                <li><a href="#" id="ratings">Ratings</a></li>
-                <li><a href="#" id="myaccount">My Account</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" id="homepage">Home Page</a></li>
+          <li><a href="#" id="order">Order</a></li>
+          <li><a href="#" id="myorders">My Orders</a></li>
+          <li><a href="#" id="deliver">Deliver</a></li>
+          <li><a href="#" id="mydeliveries">My Deliveries</a></li>
+          <li><a href="#" id="ratings">Ratings</a></li>
+          <li><a href="#" id="myaccount">My Account</a></li>
+        </ul>
+      </nav>
     </header>
     <div>
-        <input type="text" id="search-bar" placeholder="Search for items...">
+      <input type="text" id="search-bar" placeholder="Search for items..." />
     </div>
-    
+
     <div class="items-container">
-        {% for i in range(0, items|length, 2) %}
-        <div class="row">
-            {% for item in items[i:i+2] %}
-            <div class="item">
-                <img src="{{ item['Picture'] }}" alt="{{ item['Name'] }}">
-                <div class="item-details">
-                    <h3>{{ item['Name'] }}</h3>
-                    <p>{{ item['Brand'] }}</p>
-                    <p>Price: ₹ {{ item['Price'] }}</p>
-                    <div class="quantity-control">
-                        <button class="minus-btn">-</button>
-                        <span class="quantity">0</span>
-                        <button class="plus-btn">+</button>
-                    </div>
-                </div>
+      {% for i in range(0, items|length, 2) %}
+      <div class="row">
+        {% for item in items[i:i+2] %}
+        <div class="item">
+          <img src="{{ item['Picture'] }}" alt="{{ item['Name'] }}" />
+          <div class="item-details">
+            <h3>{{ item['Name'] }}</h3>
+            <p>{{ item['Brand'] }}</p>
+            <p>Price: ₹ {{ item['Price'] }}</p>
+            <div class="quantity-control">
+              <button class="minus-btn">-</button>
+              <span class="quantity">0</span>
+              <button class="plus-btn">+</button>
             </div>
-            {% endfor %}
+          </div>
         </div>
         {% endfor %}
+      </div>
+      {% endfor %}
     </div>
 
     <div class="selected-items-container">
-        <h2>Selected Items</h2>
-        <ul id="selected-items-list">
-         
-        </ul>
-        <div class="total-price">
-            <p>Items Price: ₹<span id="total-price">0.00</span></p>
-        </div>
-<!-- sorry about this items-price corresponds to total price and vice versa -->
-        <div class="items-price">
-            <p>Total Price: ₹<span id="items-price">0.00</span></p>
-        </div>
-        
-        <h2>Choose Pickup Location</h2>
-        <br>
-        <form id="pickup-form">
-            <div>
-                <label><input type="radio" name="location" value="Location 1"> Location 1</label>
-            </div>
-            <div>
-                <label><input type="radio" name="location" value="Location 2"> Location 2</label>
-            </div>
-            <div>
-                <label><input type="radio" name="location" value="Location 3"> Location 3</label>
-            </div>
-            <div>
-                <label><input type="radio" name="location" value="Location 4"> Location 4</label>
-            </div>
-            <div>
-                <label><input type="radio" name="location" value="Location 5"> Location 5</label>
-            </div>
-        </form>
-        <br>
-        <h2>Add Comments</h2>
-        <textarea id="comments" placeholder="Enter your comments here"></textarea>
+      <h2>Selected Items</h2>
+      <ul id="selected-items-list"></ul>
+      <div class="total-price">
+        <p>Items Price: ₹<span id="total-price">0.00</span></p>
+      </div>
+      <!-- sorry about this items-price corresponds to total price and vice versa -->
+      <div class="items-price">
+        <p>Total Price: ₹<span id="items-price">0.00</span></p>
+      </div>
 
-        <button id="place-order">Place Order</button>
+      <h2>Choose Pickup Location</h2>
+      <br />
+      <form id="pickup-form">
+        {% for location in locations %}
+        <div>
+          <label
+            ><input type="radio" name="location" value="{{ location }}" /> {{
+            location }}</label
+          >
+        </div>
+        {% endfor %}
+      </form>
+      <br />
+      <h2>Add Comments</h2>
+      <textarea id="comments" placeholder="Enter your comments here"></textarea>
+
+      <button id="place-order">Place Order</button>
     </div>
 
     <script src="{{ url_for('static', filename='order.js') }}"></script>
-</body>
+  </body>
 </html>
