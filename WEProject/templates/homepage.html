@@ -5,33 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About PeerFetch</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mydeliveries.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 </head>
 <body>
     <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='peerfetch_logo.png') }}" alt="Peerfetch Logo" class="logo">
+        </div>
+    </header>
+    
         <nav>
             <ul class="nav-links">
-    
-                <li><a href="#" id="homepage">Home Page</a></li>
-                <li><a href="#" id="order">Order</a></li>
-                <li><a href="#" id="myorders">My Orders</a></li>
-                <li><a href="#" id="deliver">Deliver</a></li>
-                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
-                <li><a href="#" id="ratings">Ratings</a></li>
-                <li><a href="#" id="myaccount">My Account</a></li>
+                <li><a href="{{ url_for('homepage') }}" id="homepage"><i class="fas fa-home"></i>Home</a></li>
+                <li><a href="{{ url_for('order') }}" id="order"><i class="fas fa-shopping-cart"></i>Order</a></li>
+                <li><a href="{{ url_for('deliver_orders') }}" id="deliver"><i class="fas fa-truck"></i>Deliver</a></li>
+                <li><a href="{{ url_for('myorders_page') }}" id="myorders"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+                <li><a href="{{ url_for('my_deliveries') }}" id="mydeliveries"><i class="fas fa-shipping-fast"></i>My Deliveries</a></li>
+                <li><a href="{{ url_for('ratings') }}" id="ratings"><i class="fas fa-star"></i>Ratings</a></li>
+                <li><a href="{{ url_for('myaccount') }}" id="myaccount"><i class="fas fa-user"></i>My Account</a></li>
             </ul>
         </nav>
-    </header>
 
     <main>
-        <section class="rectangle">
-            <h1>About PeerFetch</h1>
-            <p><strong>PeerFetch</strong> is your go-to platform for ordering and delivering stationery items within your college campus. We connect students who need supplies with peers who can deliver them quickly and for a nominal fee.</p>
+        <section class="about-mission-container">
+            <div class="about-section">
+                <div class="about-image">
+                    <img src="{{ url_for('static', filename='pfimg1.png') }}" alt="About Us Image">
+                </div>
+                <div class="about-text">
+                    <h2><em>About Us</em></h2>
+                    <p>PeerFetch is your go-to platform for ordering and delivering stationery items within your college campus. We connect students who need supplies with peers who can deliver them quickly and for a nominal fee.</p>
+                </div>
+            </div>
+            
+            <div class="mission-section">
+                <div class="mission-image">
+                    <img src="{{ url_for('static', filename='pfimg2.png') }}" alt="Our Mission Image">
+                </div>
+                <div class="mission-text">
+                    <h2><em>Our Mission</em></h2>
+                    <p>We aim to foster a community-driven solution for everyday stationery needs. PeerFetch empowers students to save time while creating a seamless delivery experience.</p>
+                </div>
+            </div>
         </section>
-
-        <section class="rectangle">
-            <h2>Our Mission</h2>
-            <p>We aim to foster a community-driven solution for everyday stationery needs. PeerFetch empowers students to save time while creating a seamless delivery experience.</p>
-        </section>
+        
 
         <section class="rectangle">
             <h2>How It Works</h2>
@@ -51,19 +73,25 @@
             </div>
         </section>
 
-        <section class="rectangle">
-            <h2>Why Choose Us?</h2>
-            <ul>
-                <li>Quick and convenient delivery.</li>
-                <li>Affordable fees for students.</li>
-                <li>Fosters campus community engagement.</li>
-            </ul>
+        <section class="why-choose-us">
+            <h2>Why choose us?</h2>
+            <div class="highlight-box">
+                <ul>
+                    <li>1. Quick and convenient delivery.</li>
+                    <li>2. Affordable fees for students.</li>
+                    <li>3. Fosters campus community engagement.</li>
+                </ul>
+            </div>
         </section>
-
-        <section class="rectangle">
-            <h2>Contact Us</h2>
-            <p>Have questions or suggestions? Reach us at <a href="mailto:support@peerfetch.com">support@peerfetch.com</a>.</p>
+    
+        <section class="contact-us">
+            <h2>Contact us</h2>
+            <div class="contact-box">
+                <img src="{{ url_for('static', filename='email-icon.png') }}" alt="email-icon">
+                <a href="mailto:support@peerfetch.com"><i>support@peerfetch.com</i></a>
+            </div>
         </section>
+        
     </main>
 
     <footer>

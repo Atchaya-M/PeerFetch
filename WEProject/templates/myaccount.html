@@ -5,21 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='myaccount.css') }}">
     <title>My Account</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 </head>
 <body>
+    
     <header>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#" id="homepage">Home Page</a></li>
-                <li><a href="#" id="order">Order</a></li>
-                <li><a href="#" id="myorders">My Orders</a></li>
-                <li><a href="#" id="deliver">Deliver</a></li>
-                <li><a href="#" id="mydeliveries">My Deliveries</a></li>
-                <li><a href="#" id="ratings">Ratings</a></li>
-                <li><a href="#" id="myaccount">My Account</a></li>
-            </ul>
-        </nav>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='peerfetch_logo.png') }}" alt="Peerfetch Logo" class="logo">
+        </div>
     </header>
+    
+    <!-- Navigation Bar inside header -->
+    <nav>
+        <ul class="nav-links">
+            <li><a href="#" id="homepage"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#" id="order"><i class="fas fa-shopping-cart"></i> Order</a></li>
+            <li><a href="#" id="deliver"><i class="fas fa-truck"></i> Deliver</a></li>
+            <li><a href="#" id="myorders"><i class="fas fa-clipboard-list"></i> My Orders</a></li>
+            <li><a href="#" id="mydeliveries"><i class="fas fa-shipping-fast"></i> My Deliveries</a></li>
+            <li><a href="#" id="ratings"><i class="fas fa-star"></i> Ratings</a></li>
+            <li><a href="#" id="myaccount"><i class="fas fa-user"></i>My account</a></li>
+        </ul>
+    </nav>
+    
     <div class="container">
         <div class="profile-card">
             <img src="{{ url_for('static', filename='signinimage.png') }}" alt="Profile Picture" class="profile-pic">

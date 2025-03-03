@@ -24,24 +24,24 @@
             </g>
         </svg>
         <div class="email">
-            <label for="email">Email Address</label>
+            <label for="email"> </label>
             <div class="input-wrapper">
                 <ion-icon name="mail-outline"></ion-icon>
-                <input type="email" name="email" placeholder="Username@gmail.com" required>
+                <input type="email" name="email" placeholder="Email ID:" required>
             </div>
         </div>
         <div class="password">
-            <label for="password">Password</label>
+            <label for="password"> </label>
             <div class="input-wrapper">
                 <ion-icon name="lock-closed-outline"></ion-icon>
-                <input type="password" name="password" placeholder="············" required>
+                <input type="password" name="password" placeholder="Password" required>
                 <ion-icon class="show-hide" name="eye-outline"></ion-icon>
             </div>
         </div>
         <div class="college">
             <label for="college">Select College</label>
             <select name="college" required>
-                <option value="">Select your college</option>
+                <!-- <option value="">Select your college</option> -->
                 <option value="college1">College 1</option>
                 <option value="college2">College 2</option>
                 <option value="college3">College 3</option>
@@ -49,8 +49,8 @@
         </div>
         <button class="signup" onclick="signupUser()">Sign Up</button>
         <div class="footer">
-            <span onclick="redirectToLogin()">Login</span>
-            <span onclick="forgotPassword()">Forgot Password?</span>
+            <div class="footer1"><span onclick="redirectToLogin()">Login</span></div>
+            <div class="footer2"><span onclick="forgotPassword()">Forgot Password?</span></div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='signup.js') }}"></script>

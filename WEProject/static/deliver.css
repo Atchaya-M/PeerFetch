@@ -6,21 +6,108 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: #ffffff;
+    color: #000;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-style: italic;
+    color: #1F3A93;
 }
 
 header {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
+    width: 100%;
+    background-color: #95EAF9; /* Dark Blue */
+    padding: 5px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 20px;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Navigation Bar */
+nav {
+    width: 100%;
+    background-color: #1F3A93; /* Dark Blue */
+    padding: 15px 0;
+    position: fixed;
+    top: 60px; /* Adjust according to header height */
+    left: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-style: italic;
+    font-weight: 800;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding-right: 15px;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a i {
+    font-size: 18px;
+}
+
+/* Hover Effect */
+.nav-links a:hover {
+    color: #FFD700; /* Gold */
 }
 
 main {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    margin-top: 110px; /* Adjust this value based on your header + nav height */
+    padding: 20px;
+
 }
 
 .orders-list {
@@ -31,8 +118,11 @@ main {
 
 .order-card {
     background-color: #fff;
+    width: 80%;
     padding: 20px;
+    margin: 0 auto;
     border-radius: 8px;
+    font-style: italic;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-left: 5px solid #3498db;
     transition: transform 0.2s ease;
@@ -49,7 +139,7 @@ main {
     margin-bottom: 15px;
 }
 
-.order-id, .order-status {
+.order-id {
     font-size: 1.2em;
 }
 
@@ -84,7 +174,7 @@ main {
     margin-top: 15px;
     font-weight: bold;
     font-size: 1.2em;
-    color: #2ecc71;
+    color: #081D63;
 }
 
 .order-location, .order-comments {
@@ -97,14 +187,17 @@ main {
 }
 
 .deliver-btn,.chat-btn {
-    background-color: #3498db;
-    color: #fff;
     padding: 10px 20px;
-    font-size: 1em;
+    margin: 0 auto;
+    font-size: 16px;
+    color: #fff;
+    background-color: #304690;
+    font-style: italic;
+    font-weight: 600;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .deliver-btn:hover,.chat-btn:hover {
@@ -112,39 +205,13 @@ main {
 }
 
 footer {
-    background-color: #333;
+    background-color: #1F3A93;
     color: #fff;
+    font-style: italic;
+    font-weight: 500;
     text-align: center;
     padding: 10px 0;
     margin-top: 40px;
-}
-
-
-header {
-    background-color: #333;
-    padding: 10px;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-}
-
-.nav-links {
-    list-style-type: none;
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-}
-
-.nav-links li a:hover {
-    color: #4CAF50;
 }
 
 li {
@@ -153,10 +220,37 @@ li {
 }
 
 #search-bar {
-    width: 100%;
+    width: 50%;
     padding: 10px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 20px;
     margin-bottom: 20px;
+    /* margin-top: 10px; */
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 25px;
+    font-style: italic;
+    font-weight: 900;
+    background-color: #E7E7E7;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.status.pending {
+    color: blue;  
+}
+
+.status.delivered {
+    color: green;  
+}
+
+.status.accepted {
+    color: rgb(197, 197, 35); 
+}
+
+.status.picked-up {
+    color: orange;  
 }

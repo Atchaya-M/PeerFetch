@@ -7,22 +7,30 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='order.css') }}"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Order Page</title>
   </head>
   <body>
     <header>
+      <div class="logo-container">
+          <img src="{{ url_for('static', filename='peerfetch_logo.png') }}" alt="Peerfetch Logo" class="logo">
+      </div>
+  </header>
+  
       <nav>
-        <ul class="nav-links">
-          <li><a href="#" id="homepage">Home Page</a></li>
-          <li><a href="#" id="order">Order</a></li>
-          <li><a href="#" id="myorders">My Orders</a></li>
-          <li><a href="#" id="deliver">Deliver</a></li>
-          <li><a href="#" id="mydeliveries">My Deliveries</a></li>
-          <li><a href="#" id="ratings">Ratings</a></li>
-          <li><a href="#" id="myaccount">My Account</a></li>
-        </ul>
+          <ul class="nav-links">
+              <li><a href="{{ url_for('homepage') }}" id="homepage"><i class="fas fa-home"></i>Home</a></li>
+              <li><a href="{{ url_for('order') }}" id="order"><i class="fas fa-shopping-cart"></i>Order</a></li>
+              <li><a href="{{ url_for('deliver_orders') }}" id="deliver"><i class="fas fa-truck"></i>Deliver</a></li>
+              <li><a href="{{ url_for('myorders_page') }}" id="myorders"><i class="fas fa-clipboard-list"></i>My Orders</a></li>
+              <li><a href="{{ url_for('my_deliveries') }}" id="mydeliveries"><i class="fas fa-shipping-fast"></i>My Deliveries</a></li>
+              <li><a href="{{ url_for('ratings') }}" id="ratings"><i class="fas fa-star"></i>Ratings</a></li>
+              <li><a href="{{ url_for('myaccount') }}" id="myaccount"><i class="fas fa-user"></i>My Account</a></li>
+          </ul>
       </nav>
-    </header>
     <div>
       <input type="text" id="search-bar" placeholder="Search for items..." />
     </div>

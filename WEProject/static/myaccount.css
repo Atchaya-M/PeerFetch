@@ -1,38 +1,71 @@
-
+/* General Styles */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #6b73ff, #c3f1fa);
-    color: #fff;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 100vh;
 }
 
-
+/* Header Section */
 header {
     width: 100%;
-    background-color: #1c1f26;
-    padding: 10px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    background-color: #95EAF9; /* Dark Blue */
+    padding: 5px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
+/* Logo Section */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 20px;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Navigation Bar */
 nav {
+    width: 100%;
+    background-color: #1F3A93; /* Dark Blue */
+    padding: 15px 0;
+    position: fixed;
+    top: 60px; /* Adjust according to header height */
+    left: 0;
+    z-index: 999;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
+/* Navigation Links */
 .nav-links {
     list-style: none;
     display: flex;
-    margin: 0;
+    justify-content: center;
     padding: 0;
+    margin: 0;
+    font-style: italic;
+    font-weight: 800;
 }
 
 .nav-links li {
@@ -41,18 +74,29 @@ nav {
 
 .nav-links a {
     text-decoration: none;
-    color: #fff;
+    color: white;
     font-size: 16px;
-    transition: color 0.3s;
+    font-weight: bold;
+    padding-right: 30px;
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
 }
 
+.nav-links a i {
+    font-size: 18px;
+}
+
+/* Hover Effect */
 .nav-links a:hover {
-    color: #007bff;
+    color: #FFD700; /* Gold */
 }
 
-
+/* Ensure content is visible below fixed navbar */
 .container {
-    margin-top: 80px; 
+    margin-top: 120px; /* Adjusted to ensure content isn't hidden */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,8 +104,9 @@ nav {
     padding: 20px;
 }
 
+/* Profile Card */
 .profile-card {
-    background-color: #1c1f26;
+    background-color: #95EAF9;
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
@@ -70,6 +115,7 @@ nav {
     width: 100%;
 }
 
+/* Profile Picture */
 .profile-pic {
     width: 150px;
     height: 150px;
@@ -78,19 +124,26 @@ nav {
     border: 3px solid #fff;
 }
 
-.user-email {
+/* User Information */
+.user-email,
+.user-college {
     margin: 10px 0 20px;
     font-size: 20px;
-    font-weight: bold;
+    color: #1f2d5c;
+    font-weight: 900;
+    font-style: italic;
     word-wrap: break-word;
 }
 
+/* Button Styles */
 .btn {
-    background-color: #c3f1fa;
-    color: #000000;
+    background-color: #304690;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
+    font-style: italic;
+    font-weight: 900;
     border-radius: 5px;
     margin: 10px 0;
     cursor: pointer;
@@ -101,5 +154,3 @@ nav {
 .btn:hover {
     background-color: #0056b3;
 }
-
-
