@@ -197,73 +197,146 @@ ion-icon {
     background: #555; /* Thumb color on hover */
 }
 
-
-/* Overlay for the modal background */
-.termsOverlay {
-    display: none; /* Initially hidden */
+/* Overlay Background */
+.terms-overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
-    z-index: 999; /* Ensure it stays behind the modal */
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
-/* Terms and Conditions Modal */
-.termsModal {
-    display: none; /* Initially hidden */
+/* Modal Box */
+.terms-modal {
+    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    width: 90%;
+    max-width: 600px;
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: left;
+}
+
+/* Scrollable Content */
+.terms-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* Headings */
+.terms-modal h2 {
     text-align: center;
-    z-index: 1000; /* Above the overlay */
-}
-
-/* Modal header */
-.termsModal h2 {
-    font-size: 1.5em;
+    font-size: 22px;
+    margin-bottom: 15px;
     color: #304690;
-    margin-bottom: 10px;
-    font-weight: 900;
 }
 
-/* Modal content */
-.termsModal p {
-    font-size: 0.9em;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: 600;
+.terms-modal h3 {
+    font-size: 18px;
+    color: #444;
+    margin-top: 15px;
 }
 
-/* Buttons in the modal */
+/* Buttons */
 .terms-buttons {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
 .terms-buttons button {
-    padding: 8px 16px;
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 5px;
-    font-weight: 700;
     cursor: pointer;
-    font-style: italic;
+    font-size: 16px;
+    border-radius: 5px;
+    margin: 0 5px;
 }
 
-.acceptTerms {
+#acceptTerms {
     background: #304690;
     color: white;
 }
 
-.cancelTerms {
+#cancelTerms {
     background: #ccc;
     color: black;
+}
+
+.modal-container {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 500px;
+}
+
+.modal-header {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2C3E50;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.modal-content {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.modal-content h3 {
+  font-size: 18px;
+  color: #2C3E50;
+  margin-top: 12px;
+}
+
+.modal-content p {
+  margin-top: 6px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.accept-btn {
+  background: #2C3E50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+
+.accept-btn:hover {
+  background: #1A242F;
+}
+
+.cancel-btn {
+  background: #ddd;
+  color: #555;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-btn:hover {
+  background: #ccc;
 }

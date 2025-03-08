@@ -33,15 +33,36 @@
             <div class="footer2"><span onclick="forgotPassword()">Forgot Password?</span></div>
         </div>
     </div>
+<!-- Terms & Conditions Overlay -->
+<div id="termsOverlay" class="terms-overlay"></div>
 
 <!-- Terms & Conditions Modal -->
-<div id="termsOverlay" class = "termsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);"></div>
-
-<div id="termsModal" class = "termsModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+<div id="termsModal" class="terms-modal">
     <h2>Terms and Conditions</h2>
-    <p>By signing up, you agree to our terms and conditions. Ensure you follow all rules and policies.</p>
-    <button id="acceptTerms" style="background: #304690; color: white; padding: 10px; border: none; cursor: pointer;">Accept</button>
-    <button id="cancelTerms" style=" background: #ccc; color: black; padding: 10px; border: none; cursor: pointer;">Cancel</button>
+    <div class="terms-content">
+        <p>By signing up, you agree to our terms and conditions. Please read them carefully before using our platform.</p>
+
+        <h3>1. Proper Use of the Platform</h3>
+        <p>You agree to use this platform responsibly and ethically. Misuse of the platform, including fraudulent activities, harassment, or any behavior that disrupts the system, is strictly prohibited.</p>
+
+        <h3>2. Product Handling and Damage Policy</h3>
+        <p>Users must handle all products with care. Do not damage the product after purchase. If a product is found to be damaged before purchase, please request a new one from the shop immediately. Any intentional damage to products will result in strict action.</p>
+
+        <h3>3. Complaint and Disciplinary Actions</h3>
+        <p>If any complaints are reported regarding misuse, your details will be sent to your college administration for further action. If found guilty, strict disciplinary action will be taken.</p>
+
+        <h3>4. Reporting Issues</h3>
+        <p>If you face any issues or need assistance, kindly contact us at <a href="mailto:support@peerfetch.com">support@peerfetch.com</a>. We are available at all times to assist you.</p>
+<br>
+<br>
+        <p><strong>By continuing to use this platform, you acknowledge that you have read and understood these terms and conditions and agree to comply with them.<strong></p>
+    </div>
+
+    <!-- Modal Buttons -->
+    <div class="terms-buttons">
+        <button id="acceptTerms">Accept</button>
+        <button id="cancelTerms">Cancel</button>
+    </div>
 </div>
 
 <!-- Make sure you only have ONE form -->
