@@ -7,52 +7,55 @@
     <title>Sign Up</title>
 </head>
 <body>
-    <!-- REPLACE LOGO -->
     <div class="screen-1">
-        <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 640 480">
-            <g transform="translate(320,240) scale(3.31)">
-                <circle cx="0" cy="0" r="40" fill="#3d4785"></circle>
-            </g>
-            <g transform="translate(268,214) scale(0.98)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-            <g transform="translate(363,211) scale(1.01)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-            <g transform="translate(319,287) scale(0.92)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-        </svg>
-        <div class="email">
-            <label for="email"> </label>
-            <div class="input-wrapper">
-                <ion-icon name="mail-outline"></ion-icon>
-                <input type="email" name="email" placeholder="Email ID:" required>
+        <div class = "logo-container">
+        <div class = "logo">
+            <img src="{{ url_for('static', filename='peerfetchWithoutText.png') }}" alt="Our Mission Image">
+        </div>
+    </div>
+        
+        <form id="signupForm">
+            <input type="email" name="email" class = "email" placeholder="Enter your email" required>
+            <input type="password" name="password" class = "password" placeholder="Enter your password" required>
+            <div class="college">
+                <label for="college">Select College</label>
+                <select name="college" required>
+                    <option value="college1">College 1</option>
+                    <option value="college2">College 2</option>
+                    <option value="college3">College 3</option>
+                </select>
             </div>
-        </div>
-        <div class="password">
-            <label for="password"> </label>
-            <div class="input-wrapper">
-                <ion-icon name="lock-closed-outline"></ion-icon>
-                <input type="password" name="password" placeholder="Password" required>
-                <ion-icon class="show-hide" name="eye-outline"></ion-icon>
-            </div>
-        </div>
-        <div class="college">
-            <label for="college">Select College</label>
-            <select name="college" required>
-                <!-- <option value="">Select your college</option> -->
-                <option value="college1">College 1</option>
-                <option value="college2">College 2</option>
-                <option value="college3">College 3</option>
-            </select>
-        </div>
-        <button class="signup" onclick="signupUser()">Sign Up</button>
+            <button id="signUpBtn" class = "signup" type="button">Sign Up</button>
+        </form>
+        <!-- <button class="signup" onclick="showTermsModal()">Sign Up</button> -->
         <div class="footer">
             <div class="footer1"><span onclick="redirectToLogin()">Login</span></div>
             <div class="footer2"><span onclick="forgotPassword()">Forgot Password?</span></div>
         </div>
     </div>
+
+<!-- Terms & Conditions Modal -->
+<div id="termsOverlay" class = "termsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);"></div>
+
+<div id="termsModal" class = "termsModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <h2>Terms and Conditions</h2>
+    <p>By signing up, you agree to our terms and conditions. Ensure you follow all rules and policies.</p>
+    <button id="acceptTerms" style="background: #304690; color: white; padding: 10px; border: none; cursor: pointer;">Accept</button>
+    <button id="cancelTerms" style=" background: #ccc; color: black; padding: 10px; border: none; cursor: pointer;">Cancel</button>
+</div>
+
+<!-- Make sure you only have ONE form -->
+<!-- <form id="signupForm">
+    <input type="email" name="email" placeholder="Enter your email" required>
+    <input type="password" name="password" placeholder="Enter your password" required>
+    <select name="college">
+        <option value="College 1">College 1</option>
+        <option value="College 2">College 2</option>
+    </select>
+    <button id="signUpBtn" type="button">Sign Up</button>
+</form> -->
+
+    
     <script src="{{ url_for('static', filename='signup.js') }}"></script>
     <script>
         function forgotPassword() {
@@ -60,18 +63,30 @@
             if (email) {
                 fetch('/forgot-password', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ email: email })
                 })
                 .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                });
+                .then(data => alert(data.message));
+            }
+        }
+
+        function showTermsModal() {
+            document.getElementById('termsModal').style.display = 'block';
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').style.display = 'none';
+        }
+
+        function acceptTerms() {
+            if (document.getElementById('agreeTerms').checked) {
+                closeTermsModal();
+                signupUser();
+            } else {
+                alert("You must agree to the terms and conditions to sign up.");
             }
         }
     </script>
 </body>
 </html>
-

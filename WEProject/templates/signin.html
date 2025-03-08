@@ -9,20 +9,11 @@
 <body>
     <!-- REPLACE LOGO -->
     <div class="screen-1">
-        <svg class="logo" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 640 480">
-            <g transform="translate(320,240) scale(3.31)">
-                <circle cx="0" cy="0" r="40" fill="#3d4785"></circle>
-            </g>
-            <g transform="translate(268,214) scale(0.98)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-            <g transform="translate(363,211) scale(1.01)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-            <g transform="translate(319,287) scale(0.92)">
-                <circle cx="0" cy="0" r="40" fill="#fff"></circle>
-            </g>
-        </svg>
+        <div class = "logo-container">
+            <div class = "logo">
+                <img src="{{ url_for('static', filename='peerfetchWithoutText.png') }}" alt="Our Mission Image">
+            </div>
+        </div>
      
 
         <form method="POST" action="/login">

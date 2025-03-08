@@ -14,7 +14,7 @@ body {
 }
 
 .screen-1 {
-    background: #95EAF9; /* Slightly lighter blue for the card */
+    background: #9be9f0; /* Slightly lighter blue for the card */
     padding: 2em;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
@@ -25,9 +25,22 @@ body {
     width: 350px;
 }
 
+/* .logo-container {
+    display: block;
+    justify-content: center; 
+    align-items: center
+    width: 100%; 
+    margin-bottom: 20px; 
+} */
+
 .logo {
-    margin: -3em auto 0;
+    width: 50px; /* Adjust size */
+    height: 60px;
+    margin-bottom: 70px;
+    margin-right: 80px;
+    transform: scale(0.4);
 }
+
 
 .email,
 .password {
@@ -35,6 +48,7 @@ body {
     font-weight: 900;
     font-size: 0.9em;
     font-style: italic;
+    margin: 10px;
 }
 
 .input-wrapper {
@@ -181,4 +195,75 @@ ion-icon {
 
 .college select::-webkit-scrollbar-thumb:hover {
     background: #555; /* Thumb color on hover */
+}
+
+
+/* Overlay for the modal background */
+.termsOverlay {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+    z-index: 999; /* Ensure it stays behind the modal */
+}
+
+/* Terms and Conditions Modal */
+.termsModal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1000; /* Above the overlay */
+}
+
+/* Modal header */
+.termsModal h2 {
+    font-size: 1.5em;
+    color: #304690;
+    margin-bottom: 10px;
+    font-weight: 900;
+}
+
+/* Modal content */
+.termsModal p {
+    font-size: 0.9em;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Buttons in the modal */
+.terms-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.terms-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-style: italic;
+}
+
+.acceptTerms {
+    background: #304690;
+    color: white;
+}
+
+.cancelTerms {
+    background: #ccc;
+    color: black;
 }

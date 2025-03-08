@@ -26,9 +26,13 @@ body {
 }
 
 .logo {
-    margin-top: -1em;
-    margin-bottom: 1em;
+    width: 50px; /* Adjust size */
+    height: 60px;
+    margin-bottom: 100px;
+    margin-right: 80px;
+    transform: scale(0.4);
 }
+
 
 h1 {
     font-size: 1.5em;
