@@ -174,7 +174,8 @@ def insert_locations():
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
 
-    colleges = ["college1", "college2", "college3"]
+    # colleges = ["college1", "college2", "college3"]
+    colleges = ["University of Hyderabad", "Delhi Technological University", "Manipal Institute of Technology"]
     locations_per_college = 5
 
     # Insert unique locations for each college
