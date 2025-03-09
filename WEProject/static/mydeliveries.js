@@ -1,53 +1,27 @@
-
 document.addEventListener("DOMContentLoaded", () => {
+    // Navigation links
+    const navLinks = {
+        myaccount: '/myaccount',
+        order: '/order',
+        myorders: '/myorders',
+        deliver: '/deliver',
+        ratings: '/ratings',
+        homepage: '/homepage'
+    };
 
-    const myaccountLink = document.getElementById('myaccount');
-    const orderLink = document.getElementById('order');
-    const myordersLink = document.getElementById('myorders');
-    const deliverLink = document.getElementById('deliver');
-    const ratingLink = document.getElementById('ratings');
-    const homeLink = document.getElementById('homepage');
-
-
-    myaccountLink.addEventListener('click', () => {
-        window.location.href = '/myaccount';
-       
+    Object.keys(navLinks).forEach(id => {
+        const link = document.getElementById(id);
+        if (link) {
+            link.addEventListener('click', () => {
+                window.location.href = navLinks[id];
+            });
+        }
     });
 
-    orderLink.addEventListener('click', () => {
-        window.location.href = '/order';
-      
-    });
-
-    myordersLink.addEventListener('click', () => {
-        window.location.href = '/myorders';
-       
-    });
-
-    ratingLink.addEventListener('click', () => {
-        window.location.href = '/ratings';
-       
-    });
-
-    deliverLink.addEventListener('click', () => {
-        window.location.href = 'deliver';
-      
-    });
-
-    homeLink.addEventListener('click', () => {
-        window.location.href = 'homepage';
-      
-    });
-
-    const itemsContainers = document.querySelectorAll(".items-container");
-
-    itemsContainers.forEach(container => {
-        const rawItems = container.dataset.items;
-    
+    // Parse items from dataset and display
+    document.querySelectorAll(".items-container").forEach(container => {
         try {
-            const formattedItems = rawItems.replace(/'/g, '"');
-            const items = JSON.parse(formattedItems);
-    
+            const items = JSON.parse(container.dataset.items.replace(/'/g, '"'));
             items.forEach(item => {
                 const li = document.createElement("li");
                 li.innerHTML = `
@@ -63,82 +37,51 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const priceContainers = document.querySelectorAll("#total-price, #item-price");
-
-    priceContainers.forEach(container => {
+    // Price calculations with delivery fee
+    document.querySelectorAll("#total-price, #item-price").forEach(container => {
         const rawPrice = parseFloat(container.getAttribute('data-price'));
-    
         if (isNaN(rawPrice)) {
             console.error("Invalid price value: ", rawPrice);
             return;
         }
-    
-        let updatedPrice;
-        if (rawPrice < 30) {
-            updatedPrice = rawPrice + 5;
-        } else {
-            updatedPrice = rawPrice * 1.2;
-        }
-    
-        updatedPrice = updatedPrice.toFixed(2);
-    
+
+        const updatedPrice = rawPrice < 30 ? rawPrice + 5 : rawPrice * 1.2;
         const deliveryFee = (updatedPrice - rawPrice).toFixed(2);
-        const deliveryLi = document.createElement("li");
-        deliveryLi.innerHTML = `
-            <span class="delivery-fee"><strong>Delivery Fee:</strong> ₹${deliveryFee}</span>
+
+        container.innerHTML = `
+            <li><span class="delivery-fee"><strong>Delivery Fee:</strong> ₹${deliveryFee}</span></li>
+            <li><span class="updated-price"><strong>Total Price:</strong> ₹${updatedPrice.toFixed(2)}</span></li>
         `;
-        
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <span class="updated-price"><strong>Total Price:</strong> ₹${updatedPrice}</span>
-        `;
-    
-        container.appendChild(deliveryLi);
-        container.appendChild(li);
     });
 
+    // Search function for filtering deliveries
     const searchBar = document.getElementById('search-bar');
-const deliveries = Array.from(document.querySelectorAll('.delivery-card'));
+    if (searchBar) {
+        searchBar.addEventListener('input', () => {
+            const query = searchBar.value.toLowerCase();
+            document.querySelectorAll('.delivery-card').forEach(delivery => {
+                const isMatch = Array.from(delivery.querySelectorAll('*')).some(field => 
+                    field.textContent.toLowerCase().includes(query)
+                );
+                delivery.style.display = isMatch ? '' : 'none';
+            });
+        });
+    }
 
-searchBar.addEventListener('input', () => {
-    const query = searchBar.value.toLowerCase();
-
-    deliveries.forEach(delivery => {
-        const fields = Array.from(delivery.querySelectorAll('*')); 
-        const isMatch = fields.some(field => field.textContent.toLowerCase().includes(query));
-
-        if (isMatch) {
-            delivery.style.display = ''; 
-        } else {
-            delivery.style.display = 'none';
-        }
-    });
-});
-
-
-});
-
-
-
-//otp 
-document.addEventListener('DOMContentLoaded', function() {
-    const changeStatusBtns = document.querySelectorAll('.change-status-btn');
-
-    changeStatusBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    // Delivery status change logic
+    document.querySelectorAll('.change-status-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
             const deliveryId = btn.getAttribute('data-delivery-id');
-            const currentStatus = btn.closest('.delivery-card').querySelector('.status').textContent.trim();
+            const statusElement = btn.closest('.delivery-card').querySelector('.status');
+            const currentStatus = statusElement.textContent.trim();
 
-            // Prompt user to confirm status change
             if (confirm("Do you want to change status?")) {
                 if (currentStatus === 'Accepted') {
-                    // Change status to 'Picked Up'
-                    updateStatus(deliveryId, 'Picked Up');
+                    updateStatus(deliveryId, 'Picked Up', btn);
                 } else if (currentStatus === 'Picked Up') {
-                    // OTP verification for 'Delivered'
                     const otp = prompt("Enter OTP to change status to Delivered");
                     if (otp) {
-                        verifyOtpAndUpdateStatus(deliveryId, otp);
+                        verifyOtpAndUpdateStatus(deliveryId, otp, btn);
                     }
                 }
             }
@@ -146,20 +89,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function updateStatus(deliveryId, newStatus) {
+// Function to update status without reloading
+function updateStatus(deliveryId, newStatus, button) {
     fetch(`/update_status/${deliveryId}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ delivery_id: deliveryId }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ delivery_id: deliveryId, new_status: newStatus }),
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the status displayed in the UI
             const statusElement = document.querySelector(`[data-delivery-id="${deliveryId}"]`).closest('.delivery-card').querySelector('.status');
-            statusElement.textContent = data.new_status;
+            statusElement.textContent = newStatus;
+
+            // Update button text dynamically
+            if (newStatus === 'Picked Up') {
+                button.textContent = 'Deliver';
+            } else {
+                button.style.display = 'none'; // Hide button after final status
+            }
         } else {
             alert('Error changing status: ' + (data.error || 'Unknown error'));
         }
@@ -170,21 +118,20 @@ function updateStatus(deliveryId, newStatus) {
     });
 }
 
-function verifyOtpAndUpdateStatus(deliveryId, otp) {
+// Function to verify OTP and update status
+function verifyOtpAndUpdateStatus(deliveryId, otp, button) {
     fetch(`/update_status/${deliveryId}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ otp: otp }), // Ensure OTP is sent correctly
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ delivery_id: deliveryId, otp: otp, new_status: 'Delivered' }),
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             alert('Status updated to Delivered');
-            // Update the status in the UI
             const statusElement = document.querySelector(`[data-delivery-id="${deliveryId}"]`).closest('.delivery-card').querySelector('.status');
-            statusElement.textContent = data.new_status;
+            statusElement.textContent = 'Delivered';
+            button.style.display = 'none';
         } else {
             alert('Invalid OTP');
         }

@@ -631,48 +631,53 @@ def update_status(delivery_id):
         conn2 = sqlite3.connect("orders.db")
         cursor2 = conn2.cursor()
 
-        # Fetch the current status and OTP for the delivery
+        # Fetch the current status, OTP, and order ID from the delivery table
         cursor.execute("SELECT status, otp, order_id FROM delivery WHERE id = ?", (delivery_id,))
         result = cursor.fetchone()
-        current_status, stored_otp, order_id = result if result else (None, None)
 
-        # Debug: Print current status and OTP
-        print(f"Current Status: {current_status}, Stored OTP: {stored_otp}")
+        if not result:
+            return jsonify({'success': False, 'error': 'Delivery ID not found'}), 404
 
-        # Determine the new status based on the current status
+        current_status, stored_otp, order_id = result
+
+        # Debugging logs
+        print(f"Delivery ID: {delivery_id}, Current Status: {current_status}, Stored OTP: {stored_otp}")
+
+        new_status = None
+
         if current_status == 'Accepted':
             new_status = 'Picked Up'
         elif current_status == 'Picked Up':
-            otp = request.json.get('otp')  # Get OTP from the request
-            print(f"Received OTP: {otp}")  # Debug: Print received OTP
-            if otp and str(otp).strip() == str(stored_otp).strip():  # Compare as strings
+            otp = request.json.get('otp')  # Get OTP from request
+            print(f"Received OTP: {otp}")  # Debugging log
+            if otp and str(otp).strip() == str(stored_otp).strip():
                 new_status = 'Delivered'
             else:
                 return jsonify({'success': False, 'error': 'Invalid OTP'}), 400
         else:
-            new_status = 'Delivered'  # Or any other status logic
+            return jsonify({'success': False, 'error': 'Invalid status transition'}), 400
 
         # Update the delivery status
-        print("order id", order_id)
-        print("new status", new_status)
         cursor.execute("UPDATE delivery SET status = ? WHERE id = ?", (new_status, delivery_id))
-        conn.commit()  # Commit after updating delivery status
+        conn.commit()
 
         # Update the orders status
         cursor2.execute("UPDATE orders SET status = ? WHERE id = ?", (new_status, order_id))
-        if cursor2.rowcount == 0:
-            print(f"No rows updated in orders table for order_id: {order_id}")
-        conn2.commit()  # Commit after updating orders status
+        conn2.commit()
 
-        # Check how many rows are affected in orders table
-        
+        # Debugging logs
+        print(f"Order ID: {order_id}, New Status: {new_status}")
+
+        # Close connections
         conn.close()
         conn2.close()
 
         return jsonify({'success': True, 'new_status': new_status})
+    
     except Exception as e:
         print(f"Error updating status: {e}")
-        return jsonify({'success': False}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 # FORGOT PASSWORD
